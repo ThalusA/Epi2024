@@ -1,0 +1,24 @@
+{
+  "name": "epi2024",
+  "version": "1.0.0",
+  "description": "Discord Bot for Epitech Promo 2024",
+  "main": "main.js",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThalusA/Epi2024.git"
+  },
+  "author": "Epi2024",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThalusA/Epi2024/issues"
+  },
+  "homepage": "https://github.com/ThalusA/Epi2024#readme"
+}
