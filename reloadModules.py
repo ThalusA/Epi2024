@@ -8,17 +8,21 @@ class reloadModules:
     description = ""
     helpMessage = ""
     permission = "ADMINISTRATOR"
-    
-    def __init__(self, client):
-        self.client = client
-        self.message = message
 
-    async def reloadModules(self):
-        files = os.listdir('./modules')
+    async def function(self, message, args):
+        if(message): message.add_reaction(":ballot_box_with_check:")
         sys.path.append('./modules')
-        for module in files:
+        for module in os.listdir('./modules'):
             if module.endswith('.py'):
                 fmodule = module[:-3]
-                exec(f"globals({fmodule}) = __import__({fmodule}).{fmodule}")
-                funcs = [x for x, y in eval(f'{fmodule}.__dict__.items()') if type(y) == FunctionType]
-                Modules[fmodule] = funcs
+                if (fmodule in self.Modules):
+                    del self.Modules[fmodule]
+                    print("The module '", fmodule, "' has been unloaded.")
+                try:
+                    self.Modules[fmodule] = __import__(fmodule, fromlist=[fmodule])
+                    print("The module '", fmodule, "' has been loaded.")
+                except Exception:
+                    message.remove_reaction(":ballot_box_with_check:", self.client.user)
+                    message.add_reaction(":x:")
+                    print("The module", fmodule, " failed to be loaded.")
+                

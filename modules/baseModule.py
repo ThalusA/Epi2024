@@ -4,11 +4,7 @@ class baseModule:
 	shownInHelp = "false"
 	description = ""
 	helpMessage = ""
-	permission = ""
+	permission = 0
 	
-	def __init__(self, client, message):
-		self.client = client
-		self.message = message
-	
-	async def command(self):
+	async def function(self, message, args):
 		pass
