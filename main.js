@@ -18,11 +18,11 @@ client.on('message', message =>{
     if (message.content.startsWith(prefix)){
         message_content = message.content.slice(prefix.length);
         tmp = strsplit(message_content, ' ', 2);
-        if (Modules[tmp[0]] && message.member.hasPermission(Modules[tmp[0]].permission)) {
+        if (Modules[tmp[0]] && message.member.hasPermission(discord.Permissions(null, Modules[tmp[0]].permission))) {
             try {
                 Modules[tmp[0]].func(message, tmp[1]);
             } catch (e) {
-                message.reply(":warning: error executing the function !");
+                message.channel.send(":warning: error executing the function !");
                 console.log(e);
             }
         }

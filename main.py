@@ -22,11 +22,12 @@ class discord_bot:
         if message.content.startswith(self.prefix):
             message_content = message.content[len(self.prefix):]
             tmp = message_content.split(' ', 1)
-            if tmp[0] in self.Modules and not (False in [True for perm in self.Modules[tmp[0]].permission.lower() if message.author.guild_permissions[perm]]):
+            if len(tmp) == 1: tmp = [tmp[0], None]
+            if tmp[0] in self.Modules and message.author.guild_permissions.is_superset(discord.Permissions(self.Modules[tmp[0]].permission)):
                 try:
                     await self.Modules[tmp[0]].function(self, message, tmp[1])
                 except Exception as fail:
-                    await message.reply(":warning: error executing the function !")
+                    await message.channel.send(":warning: error executing the function !")
                     print(fail)
 
 Epi2024_bot = discord_bot()

@@ -19,4 +19,4 @@ class help:
 					if (mod.permission):
 						permission = f' ( Required Permission: {mod.permission} )'
 					helpOutput += f'{mod.name} : {mod.helpMessage}{permission}\n'
-		self.client.send_message(message.channel, '```'+helpOutput+'```')
+		message.channel.send('```'+helpOutput+'```')
