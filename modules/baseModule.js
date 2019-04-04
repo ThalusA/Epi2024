@@ -4,7 +4,7 @@ module.exports = {
   shownInHelp:"false",
   description:"",
   helpMessage:"",
-  permission:"",
+  permission:0,
   func : function (message, args) {
 		
     }

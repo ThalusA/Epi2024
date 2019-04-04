@@ -4,31 +4,29 @@ module.exports = {
   shownInHelp:"false",
   description:"",
   helpMessage:"",
-  permission:"",
+  permission:8,
   func : function (msg, args) {
-    if ((msg === undefined) || (msg.member.hasPermission('ADMINISTRATOR'))) {
-      if (msg === !undefined){msg.react("✅");}
-      fs.readdirSync("./modules/").forEach(file => {
-        if (file.slice(-3) === ".js"){
-          ModuleName = file.slice(0, -3);
-          if (Modules[ModuleName] && ModuleName != "reloadModules") {
-            delete require.cache[require.resolve("./modules/" + ModuleName)];
-            delete Modules[ModuleName];
-            console.log("Unloaded module ./modules/" + ModuleName);
-          }
-          try {
-            Modules[ModuleName] = require("./modules/" + ModuleName);
-            console.log("module ./modules/" + file + " is being loaded");
-          } catch (e) {
-            if (msg === !undefined) {
-              msg.clearReactions();
-              msg.react("❎");
-            }
-            console.log("module ./modules/" + ModuleName + " failed to be loaded");
-            console.warn(e);
-          }
+    if (msg !== undefined){var react = msg.react("✅");}
+    fs.readdirSync("./modules/").forEach(file => {
+      if (file.slice(-3) === ".js"){
+        ModuleName = file.slice(0, -3);
+        if (Modules[ModuleName] && ModuleName != "reloadModules") {
+          delete require.cache[require.resolve("./modules/" + ModuleName)];
+          delete Modules[ModuleName];
+          console.log("The module '"+ ModuleName + "' has been unloaded");
         }
-      });
-    }
+        try {
+          Modules[ModuleName] = require("./modules/" + ModuleName);
+          console.log("The module '"+ ModuleName + "' has beeen loaded");
+        } catch (e) {
+          if (msg !== undefined) {
+            react.remove(client.user);
+            msg.react("❎");
+          }   
+          console.log("The module '" + ModuleName + "' failed to be loaded");
+          console.warn(e);
+        }
+      }
+    });
   }
-}
+};

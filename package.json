@@ -5,7 +5,8 @@
   "main": "main.js",
   "dependencies": {
     "discord.js": "^11.4.2",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "strsplit": "^1.0.0"
   },
   "devDependencies": {},
   "scripts": {

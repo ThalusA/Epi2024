@@ -7,18 +7,23 @@ class reloadModules:
     shownInHelp = "false"
     description = ""
     helpMessage = ""
-    permission = "ADMINISTRATOR"
-    
-    def __init__(self, client):
-        self.client = client
-        self.message = message
+    permission = 8
 
-    async def reloadModules(self):
-        files = os.listdir('./modules')
+    async def function(self, message, args):
+        if(message):
+            await message.add_reaction("☑")
         sys.path.append('./modules')
-        for module in files:
+        for module in os.listdir('./modules'):
             if module.endswith('.py'):
                 fmodule = module[:-3]
-                exec(f"globals({fmodule}) = __import__({fmodule}).{fmodule}")
-                funcs = [x for x, y in eval(f'{fmodule}.__dict__.items()') if type(y) == FunctionType]
-                Modules[fmodule] = funcs
+                if (fmodule in self.Modules):
+                    del self.Modules[fmodule]
+                    print("The module '" + fmodule + "' has been unloaded.")
+                try:
+                    self.Modules[fmodule] = __import__(fmodule, fromlist=[fmodule])
+                    print("The module '" + fmodule + "' has been loaded.")
+                except Exception:
+                    await message.remove_reaction("☑", self.client.user)
+                    await message.add_reaction("❌")
+                    print("The module" + fmodule + " failed to be loaded.")
+                
