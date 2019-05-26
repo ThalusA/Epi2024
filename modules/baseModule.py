@@ -1,7 +1,7 @@
 class baseModule:
 	name = "baseModule"
 	category = "Misc"
-	shownInHelp = "false"
+	shownInHelp = False
 	description = ""
 	helpMessage = ""
 	permission = 0

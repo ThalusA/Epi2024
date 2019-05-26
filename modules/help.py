@@ -1,22 +1,23 @@
 class help:
+
 	name = "help"
 	category = "Misc"
-	shownInHelp = "true"
+	shownInHelp = True
 	description = ""
 	helpMessage = "List all available command of Python environment"
 	permission = 0
 	
 	async def function(self, message, args):
 		helpOutput = ""
-		permission = ""
+		permissions = ""
 		if args:
-			if self.Modules[args].permission != "":
-				permission = f" ( Required Permission : {self.Modules[args].permission} )"
-			helpOutput += f"{self.Modules[args].name}: {self.Modules[args].description}{permission}"
+			if getattr(self.Modules[args], args).permission != "":
+				permissions = f" ( Required Permission : {getattr(self.Modules[args], args).permission} )"
+			helpOutput += f"{self.Modules[args].__name__}: {getattr(self.Modules[args], args).description}{permissions}"
 		else : 
-			for mod in self.Modules:
-				if (mod.name != "baseModule" and mod.shownInHelp == "true"):
-					if (mod.permission):
-						permission = f' ( Required Permission: {mod.permission} )'
-					helpOutput += f'{mod.name} : {mod.helpMessage}{permission}\n'
-		message.channel.send('```'+helpOutput+'```')
+			for mod in self.Modules.values():
+				if (mod.__name__ != "baseModule" and getattr(mod, mod.__name__).shownInHelp == True):
+					if (getattr(mod, mod.__name__).permission):
+						permissions = f' ( Required Permission: {getattr(mod, mod.__name__).permission} )'
+					helpOutput += f'{mod.__name__} : {getattr(mod, mod.__name__).helpMessage}{permissions}\n'
+		await message.channel.send('```'+helpOutput+'```')

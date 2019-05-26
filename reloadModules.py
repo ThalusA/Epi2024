@@ -4,7 +4,7 @@ import sys
 class reloadModules:
     name = "reloadModules"
     category = "Misc"
-    shownInHelp = "false"
+    shownInHelp = False
     description = ""
     helpMessage = ""
     permission = 8
@@ -26,4 +26,3 @@ class reloadModules:
                     await message.remove_reaction("☑", self.client.user)
                     await message.add_reaction("❌")
                     print("The module" + fmodule + " failed to be loaded.")
-                
