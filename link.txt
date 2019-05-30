@@ -1,0 +1,32 @@
+https://github.com/angular/angular-cli/issues/8272
+
+
+How can we expose the Node modules globally in our project? We have to define them as externals in our webpack.config.js:
+module.exports = {
+   "externals": {
+      "electron": "require('electron')",
+      "child_process": "require('child_process')",
+      "fs": "require('fs')",
+      "path": "require('path')"
+      [remainder omitted]
+   }
+}
+
+If you have no webpack.config.js you probably haven’t ecjected your projected yet.
+
+Run  ng eject  in a console to eject webpack.config.js from angular-cli. 
+This will generate webpack.config.js in the root folder of your project. 
+You’re free to configure it the way you want. However, once created, there is not yet an externals option in module.exports. 
+Therefore, you have to add it manually.
+
+
+If you are using Electron and it still does not work, try the following things in addition.
+Add target:'electron-renderer' to module.exports in the Webpack configuration. 
+Others also recommend to use this NPM package: webpack-target-electron-renderer
+Find more information on Webpack and Node.js in the Webpack documentation.
+Webpack has a difficult learning curve. 
+But once you have set up your projects, its a really fast and convenient way to build your application. 
+I hope that this article has solved one of the problems you might face on your way.
+
+
+https://makina-corpus.com/blog/metier/2018/mettre-en-place-angular-universal-avec-angular-6-angular-7

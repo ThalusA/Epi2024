@@ -1,4 +1,5 @@
 class baseModule:
+	
 	name = "baseModule"
 	category = "Misc"
 	shownInHelp = False

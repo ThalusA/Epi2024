@@ -4,6 +4,7 @@
   "description": "Discord Bot for Epitech Promo 2024",
   "main": "main.js",
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "discord.js": "^11.4.2",
     "fs": "^0.0.1-security",
     "strsplit": "^1.0.0"
