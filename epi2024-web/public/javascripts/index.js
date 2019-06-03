@@ -27,3 +27,19 @@ function selector() {
     editor.setOption("mode", ext);
     editor.setValue(previewFiles[idx].data);
 }
+
+function validate() {
+    var env = document.getElementById("file-selector").value;
+    var value = editor.getValue();
+    if (env == "New Module PY"){
+        env = "python3";
+    } else {
+        if (env == "New Module JS"){
+            env = "node";
+        }
+    }
+}
+
+function submit() {
+    validation = validate();
+}
