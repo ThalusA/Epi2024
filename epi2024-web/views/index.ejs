@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body class="bg-dark">
+    <div style="text-align:center">
+      <h1>Epi2024 - JS/PY Discord Bot</h1>
+        <div class="container bg-primary">
+            <p><div class="btn-group" role="group">
+                <button type="button" class="btn btn-secondary" onchange='validate()'>Validate</button>
+                <button type="button" class="btn btn-secondary" onchange='submit()'>Submit</button>
+                <button type="button" class="btn btn-secondary col" onclick="location.href='/request'">Requests Page</button>
+                <select class="form-control" id="file-selector" onchange='selector()'>
+                    <option>New Module JS</option>
+                    <option>New Module PY</option>
+                    <% modules.forEach(function(module){ if(module != "baseModule.py" && module != "baseModule.js") {%>
+                      <option><%- module %></option>
+                    <% }}); %>
+                </select>
+            </div></p>  
+            <p><form>
+                <div class="form-group" style="text-align:left">
+                    <textarea class="form-control" id="codeForm" rows="30"></textarea>
+                </div>
+            </form></p>
+        </div>
+    </div>
+    <script type="text/javascript">
+      const previewFiles = <%- previewFiles %>
+    </script>
+    <link rel="stylesheet" href="/stylesheets/codemirror.css">
+    <script src="/javascripts/codemirror.js"></script>
+    <script type="text/javascript" src="/javascripts/index.js"></script>
+    <script type="text/javascript" src="/javascripts/javascript.js"></script>
+    <script type="text/javascript" src="/javascripts/python.js"></script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+{
+    "name": "Name of the module",
+    "description": "Description of the module",
+    "author" : "Name of the Author of the module",
+    "state": "State of the request (Validated | Refused | Request In Progress)",
+    "id": "ID Number of the module",
+    "data": "Module's source code"
+}

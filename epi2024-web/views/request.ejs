@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="stylesheet" href="/stylesheets/emoji.css" />
+  </head>
+  <body class="bg-dark">
+    <div style="text-align:center">
+      <h1>Epi2024 - JS/PY Discord Bot</h1>
+      <div class="container bg-primary">
+        <% requestList.forEach(function (request){%>
+            <p><div class=<% if(request.state == "Validated"){"container-fluid bg-success"} else {if(request.state == "Refused") {"container-fluid bg-danger"} else {if (request.state == "Request In Progress"){"container-fluid bg-warning"}}} %>> // Replace bgcolor induced by request.state
+                <div class="row">
+                    <div class="col"> Name of the module : <%= request.name %> Description : <%= request.description %></div>
+                    <div class="col"> Author of the request : <%= request.author %></div>
+                    <div class="col"> State of the request : <%= request.state %></div>
+                    <% if (adminMode == true) {%>
+                        <div class="col"> 
+                            <p><div>Accept/Deny Request</div></p>
+                            <div class="row">
+                                <button type="button" class="btn btn-success" id=<%= request.id + "V" %>><i class="em-svg em-heavy_check_mark"></i></button>
+                                <button type="button" class="btn btn-danger" id=<%= request.id + "R" %>><i class="em-svg em-heavy_multiplication_x"></i></button>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div><p>
+        <% })%>
+        <div>Captions : </div>
+        <div class="row">
+            <div class="bg-success col">Validated</div>
+            <div class="bg-danger col">Refused</div>
+            <div class="bg-warning col">Request In Progress</div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      const numberOfRequest = <%- requestList.length %>
+      const adminMode = <%- adminMode %>
+    </script>
+    <script type="text/javascript" src="/javascripts/request.js"></script>
+  </body>
+</html>
