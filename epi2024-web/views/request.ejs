@@ -7,7 +7,7 @@
   </head>
   <body class="bg-dark">
     <div style="text-align:center">
-      <h1>Epi2024 - JS/PY Discord Bot</h1>
+      <h1 class="text-muted">Epi2024 - JS/PY Discord Bot</h1>
       <div class="container bg-primary">
         <% requestList.forEach(function (request){%>
             <p><div class=<% if(request.state == "Validated"){"container-fluid bg-success"} else {if(request.state == "Refused") {"container-fluid bg-danger"} else {if (request.state == "Request In Progress"){"container-fluid bg-warning"}}} %>> // Replace bgcolor induced by request.state

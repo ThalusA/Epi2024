@@ -6,34 +6,48 @@
   </head>
   <body class="bg-dark">
     <div style="text-align:center">
-      <h1>Epi2024 - JS/PY Discord Bot</h1>
-        <div class="container bg-primary">
+      <h1 class="text-muted">Epi2024 - JS/PY Discord Bot</h1>
+        <div class="container">
             <p><div class="btn-group" role="group">
                 <button type="button" class="btn btn-secondary" onchange='validate()'>Validate</button>
                 <button type="button" class="btn btn-secondary" onchange='submit()'>Submit</button>
                 <button type="button" class="btn btn-secondary col" onclick="location.href='/request'">Requests Page</button>
-                <select class="form-control" id="file-selector" onchange='selector()'>
-                    <option>New Module JS</option>
-                    <option>New Module PY</option>
+                <select class="form-control col-5" id="file-selector" onchange='selector()'>
+                    <option value=0 selected hidden>-- SELECT --</option>
+                    <option value=1>New JavaScript module</option>
+                    <option value=2>New Python module</option>
                     <% modules.forEach(function(module){ if(module != "baseModule.py" && module != "baseModule.js") {%>
                       <option><%- module %></option>
                     <% }}); %>
                 </select>
-            </div></p>  
+            </div></p>
             <p><form>
                 <div class="form-group" style="text-align:left">
                     <textarea class="form-control" id="codeForm" rows="30"></textarea>
                 </div>
             </form></p>
+            <div>
+              <p><div class="input-group mb-3" id="inputgroup" style="visibility: hidden;">
+                  <div class="input-group-prepend"><span class="input-group-text bg-dark text-white">Name : </span></div>
+                  <input type="text" class="form-control bg-secondary text-white" id="name" aria-describedby="basic-addon3">
+                  <div class="input-group-prepend"><span class="input-group-text bg-dark text-white">Author : </span></div>
+                  <input type="text" class="form-control bg-secondary text-white" id="author" aria-describedby="basic-addon3">
+                  <div class="input-group-prepend"><span class="input-group-text bg-dark text-white">Description : </span></div>
+                  <input type="text" class="form-control bg-secondary text-white" id="description" aria-describedby="basic-addon3">
+              </div></p>
+              <p style="line-height: 0.3;"><br/></p>
+            </div>
         </div>
     </div>
     <script type="text/javascript">
       const previewFiles = <%- previewFiles %>
     </script>
     <link rel="stylesheet" href="/stylesheets/codemirror.css">
-    <script src="/javascripts/codemirror.js"></script>
-    <script type="text/javascript" src="/javascripts/index.js"></script>
+    <link rel="stylesheet" href="/stylesheets/midnight.css">
+    <script type="text/javascript" src="/javascripts/codemirror.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/javascript.js"></script>
     <script type="text/javascript" src="/javascripts/python.js"></script>
+    <script type="text/javascript" src="/javascripts/index.js"></script>
   </body>
 </html>

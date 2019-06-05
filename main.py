@@ -1,6 +1,6 @@
 import discord
 import json
-import os
+import os 
 import sys
 
 class discord_bot:
