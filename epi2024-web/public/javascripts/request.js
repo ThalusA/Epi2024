@@ -9,12 +9,11 @@ function refuse(id){
 
 }
 
-
-for (var idx = 0; idx < numberOfRequest; idx++) {
-    document.getElementById(idx+"V").addEventListener("click", function() {
+requestIds.forEach(function (id){
+    document.getElementById(id+"V").addEventListener("click", function() {
         validate(idx);
     }, false);
-    document.getElementById(idx+"R").addEventListener("click", function() {
+    document.getElementById(id+"R").addEventListener("click", function() {
         refuse(idx);
     }, false);
-}
+});

@@ -12,15 +12,33 @@ function getUserStatus(req) {
 
 function getRequestList() {
   var requestList = Array();
-  var requests = fs.readdirSync('modules');
-  requests.forEach( function (file) {
-    if (file == "example.json") return;
-    requestList.push(JSON.parse(fs.readFileSync('/modules/' + file)));
-  });
-  requestList = requestList.sort(function (a, b){
-    return b.id - a.id;
+  var i = 0;
+  fs.readdir('modules', function (files){
+    files.forEach( function (file, index, array) {
+      i++;
+      if (file == "example.json") return;
+      requestList.push(JSON.parse(fs.readFileSync('/modules/' + file)));
+      if(i == array.length){
+        requestList = requestList.sort(function (a, b){return b.id - a.id;});
+        
+      }
+    });
   });
   return requestList;
+}
+
+function getRequestIds(){
+  var requestIds = Array();
+  fs.readdir('modules', function (files){
+    files.forEach(function (file){
+      if (file == "example.json") return;
+      fs.readFile(file, function(data){
+        var json = JSON.parse(data);
+        requestIds.push(json.id);
+      });
+    });
+  });
+  return requestIds;
 }
 
 /* GET request listing. */
@@ -28,11 +46,13 @@ router.get('/', function(req, res, next) {
   /* INIT VAR */
   var adminMode = getUserStatus(req);
   var requestList = getRequestList();
+  var requestIds = getRequestIds();
   /* RENDER ALL VAR */
   res.render('request', {
     title: "Epi2024 Bot - Requests",
     adminMode: adminMode,
-    requestList: requestList
+    requestList: requestList,
+    requestIds: requestIds
   });
 });
 

@@ -52,6 +52,46 @@ function requirement_py(data){
   return requirements;
 }
 
+function validate(response, res, next){
+  var options = new DockerOptions('machine_'+response.env, '/docker/'+response.env);
+  var docker = new Docker(options);
+  var random_key = Math.random().toString(); 
+  var config = Array(3);
+  
+  if (response.env == "node") {
+    config[0] = response.data + "\nconsole.log("+random_key+")";
+    config[1] = '/docker/node/package.json';
+    config[2] = requirement_js(response.data);
+  } else if (response.env == "python3"){
+    config[0] = response.data + "\nprint("+random_key+")";
+    config[1] = '/docker/python3/requirements.txt';
+    config[2] = requirement_py(response.data);
+  }
+
+  fs.writeFile(config[1], config[2], function(){
+    fs.writeFile('/docker/'+response.env+'/app'+response.ext, config[0], function(){
+      docker.command('build -t env_img .').then(function (data){
+        docker.command('run --name '+response.env+' env_img ').then(function (data_r){
+          docker.command('logs').then(function (data_l){
+            if (data_l.includes(random_key)){
+              res.send(1);
+            } else {
+              res.send(data_l);
+            }
+          });
+        });
+      });
+    });
+  });
+}
+
+function submit(response, res, next){
+  var name = response.name;
+  var json = JSON.stringify(response);
+  fs.writeFile('/modules/'+name+'.json', json, function (err){
+    if (err) {res.send(0);} else {res.send(1);}
+  });
+}
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -67,20 +107,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next){
-  var response = req.body;
-  var options = new DockerOptions('machine_'+response.env, '/docker/'+response.env);
-  var docker = new Docker(options);
-  fs.writeFileSync('/docker/'+response.env+'/app'+response.ext, response.data);
-  if (response.env == "node") {
-    fs.writeFileSync('/docker/node/package.json', requirement_js(response.data));
-  } else if (response.env == "python3") {
-    fs.writeFileSync('/docker/python3/requirements.txt', requirement_py(response.data));
+  if (req.body.type == "validate") {
+    validate(req.body.module_inf, res, next);
+  } else if (req.body.type == "submit") {
+    submit(req.body.module_inf, res, next);
   }
-  docker.command('build -t env_img .').then(function (data){
-    docker.command('run --name '+response.env+' -d -p 8000:8000 env_img ').then(function (data_r){
-      
-    });
-  });
 });
 
 module.exports = router;

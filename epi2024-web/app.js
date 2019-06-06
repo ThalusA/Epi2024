@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sass = require('node-sass-middleware');
 var bodyParser= require('body-parser');
+var compression = require('compression');
 
 var indexRouter = require('./routes/index');
 var requestRouter = require('./routes/request');
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(compression());
 
 app.use('/', indexRouter);
 app.use('/request', requestRouter);
