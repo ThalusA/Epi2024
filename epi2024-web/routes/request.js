@@ -19,8 +19,7 @@ function getRequestList() {
       if (file == "example.json") return;
       requestList.push(JSON.parse(fs.readFileSync('/modules/' + file)));
       if(i == array.length){
-        requestList = requestList.sort(function (a, b){return b.id - a.id;});
-        
+        requestList = requestList.sort(function (a, b){return b.date - a.date;});
       }
     });
   });

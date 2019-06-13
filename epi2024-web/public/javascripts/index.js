@@ -94,7 +94,8 @@ function submit() {
             id: MD5(name + author),
             data: value,
             extension: ext,
-            environment: env
+            environment: env,
+            date: (new Date()).getTime()
         };
 
         $.post('/', {
