@@ -13,7 +13,7 @@ function getUserStatus(req) {
 function getRequestList() {
   var requestList = Array();
   var i = 0;
-  fs.readdir('modules', function (files){
+  fs.readdir('/modules', function (err, files){
     files.forEach( function (file, index, array) {
       i++;
       if (file == "example.json") return;

@@ -41,13 +41,10 @@ function selector() {
     editor.setValue(previewFiles[idx].data);
 }
 
-function validate() {
+function validate(callback) {
     var env = document.getElementById("file-selector").value;
     var value = editor.getValue();
-    var name = document.getElementById("name").value;
-    var author = document.getElementById("author").value;
-    var desc = document.getElementById("description").value;
-    var ext = "";
+    var ext = env.substr(-3);
     
     if (env == "New Module PY"){
         env = "python3";
@@ -55,10 +52,15 @@ function validate() {
     } else if (env == "New Module JS"){
         env = "node";
         ext = ".js";
+    } else if (ext == ".js") {
+        env = "node";
+    } else if (ext == ".py") {
+        env = "python3";
     }
 
     var module_inf = {
         ext: ext,
+        env: env,
         data: value
     };
 
@@ -71,51 +73,39 @@ function validate() {
                 document.getElementById("debug").style.visibility = "visible";
             }
             document.getElementById("debuginf").value = data;
-            return 1;
+            if (callback) callback(1, env, ext, data); else return 1;
         } else {
-            return 0;
+            if (callback) callback(0, env, ext, value); else return 0;
         }
     });
 }
 
 function submit() {
-    if(validate() == 0){return;}
-    var env = document.getElementById("file-selector").value;
-    var value = editor.getValue();
-    var name = document.getElementById("name").value;
-    var author = document.getElementById("author").value;
-    var desc = document.getElementById("description").value;
-    var ext = "";
-    
-    if (env == "New Module PY"){
-        env = "python3";
-        ext = ".py";
-    } else if (env == "New Module JS"){
-        env = "node";
-        ext = ".js";
-    }
+    validate(function (cb, env, ext, value){
+        if (cb == 0) return;
+        var name = document.getElementById("name").value;
+        var author = document.getElementById("author").value;
+        var desc = document.getElementById("description").value;
+        var module_inf = {
+            name: name,
+            description: desc,
+            author: author,
+            state: "Request In Progress",
+            id: MD5(name + author),
+            data: value,
+            extension: ext,
+            environment: env
+        };
 
-    var module_inf = {
-        name: name, 
-        description:desc, 
-        author:author, 
-        state:"Request In Progress", 
-        id:MD5(name+author),
-        data:value, 
-        extension: ext, 
-        environment: env
-    };
-
-    $.post('/', {
-        type: "submit",
-        module_inf: module_inf     
-    }, function (data, status){
-        if (status == 200){
-            return 1;
-        } else {
-            return 0;
-        }
+        $.post('/', {
+            type: "submit",
+            module_inf: module_inf
+        }, function (data, status) {
+            if (status == 200) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
     });
-
-
 }

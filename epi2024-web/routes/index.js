@@ -86,9 +86,7 @@ function validate(response, res, next){
 }
 
 function submit(response, res, next){
-  var name = response.name;
-  var json = JSON.stringify(response);
-  fs.writeFile('/modules/'+name+'.json', json, function (err){
+  fs.writeFile('/modules/'+response.name+'.json', JSON.stringify(response), function (err){
     if (err) {res.send(0);} else {res.send(1);}
   });
 }
