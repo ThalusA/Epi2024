@@ -41,9 +41,6 @@ function selector() {
     editor.setValue(previewFiles[idx].data);
 }
 
-
-
-
 function validate() {
     var env = document.getElementById("file-selector").value;
     var value = editor.getValue();
@@ -61,9 +58,6 @@ function validate() {
     }
 
     var module_inf = {
-        name: name,
-        author: author,
-        description: desc,
         ext: ext,
         data: value
     };
