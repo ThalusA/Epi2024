@@ -73,9 +73,10 @@ function validate(callback) {
                 document.getElementById("debug").style.visibility = "visible";
             }
             document.getElementById("debuginf").value = data;
-            if (callback) callback(1, env, ext, data); else return 1;
+            if (callback) callback(1, env, ext, data); else console.log("Validation complete");
         } else {
-            if (callback) callback(0, env, ext, value); else return 0;
+            console.log(data);
+            if (callback) callback(0, env, ext, value); else console.log("Validation failed");
         }
     });
 }
@@ -85,10 +86,9 @@ function submit() {
         if (cb == 0) return;
         var name = document.getElementById("name").value;
         var author = document.getElementById("author").value;
-        var desc = document.getElementById("description").value;
         var module_inf = {
             name: name,
-            description: desc,
+            description: document.getElementById("description").value,
             author: author,
             state: "Request In Progress",
             id: MD5(name + author),
@@ -103,9 +103,9 @@ function submit() {
             module_inf: module_inf
         }, function (data, status) {
             if (status == 200) {
-                return 1;
+                console.log("Submition complete");
             } else {
-                return 0;
+                console.log("Submition failed");
             }
         });
     });
