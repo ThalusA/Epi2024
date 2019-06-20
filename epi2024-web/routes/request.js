@@ -26,17 +26,11 @@ function getRequestList() {
   return requestList;
 }
 
-function getRequestIds(){
+function getRequestIds(requestList){
   var requestIds = Array();
-  fs.readdir('modules', function (files){
-    files.forEach(function (file){
-      if (file == "example.json") return;
-      fs.readFile(file, function(data){
-        var json = JSON.parse(data);
-        requestIds.push(json.id);
-      });
-    });
-  });
+  for (var index = 0; index < requestList.length; index++) {
+    requestIds.push(requestList[index].id);
+  }
   return requestIds;
 }
 
@@ -45,7 +39,7 @@ router.get('/', function(req, res, next) {
   /* INIT VAR */
   var adminMode = getUserStatus(req);
   var requestList = getRequestList();
-  var requestIds = getRequestIds();
+  var requestIds = getRequestIds(requestList);
   /* RENDER ALL VAR */
   res.render('request', {
     title: "Epi2024 Bot - Requests",
