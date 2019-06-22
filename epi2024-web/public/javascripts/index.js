@@ -63,20 +63,28 @@ function validate(callback) {
         env: env,
         data: value
     };
-
-    $.post("/", {
-        type: "validate",
-        module_inf: module_inf
-    }, function(data, status){
-        if (status == 200){
-            if (document.getElementById("debug").style.visibility == "hidden"){
-                document.getElementById("debug").style.visibility = "visible";
+    $.ajax(this.href, {
+        method: "POST",
+        data: {
+            type: "validate",
+            module_inf: module_inf
+        },
+        error: function () {
+            if (callback) callback(0); 
+            else console.log("Validation failed");
+        },
+        success: function (data) {
+            if (data == 1){
+                if (callback) callback(1, env, ext, value);
+                else console.log("Validation complete");
+            } else {
+                if (document.getElementById("debug").style.visibility == "hidden")
+                    document.getElementById("debug").style.visibility = "visible";
+                document.getElementById("debuginf").value = data;
+                if (callback) callback(0);
+                else console.log("Validation failed");
             }
-            document.getElementById("debuginf").value = data;
-            if (callback) callback(1, env, ext, data); else console.log("Validation complete");
-        } else {
-            console.log(data);
-            if (callback) callback(0, env, ext, value); else console.log("Validation failed");
+            
         }
     });
 }
@@ -98,14 +106,18 @@ function submit() {
             date: (new Date()).getTime()
         };
 
-        $.post('/', {
-            type: "submit",
-            module_inf: module_inf
-        }, function (data, status) {
-            if (status == 200) {
-                console.log("Submition complete");
-            } else {
+        $.ajax(this.href, {
+            method: "POST",
+            data: {
+                type: "submit",
+                module_inf: module_inf
+            },
+            error: function () {
                 console.log("Submition failed");
+            },
+            success: function (data) {
+                if (data) console.log("Submition complete");
+                else console.log("Submition failed");
             }
         });
     });

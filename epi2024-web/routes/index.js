@@ -71,7 +71,7 @@ function validate(response, res, next){
   fs.writeFile(config[1], config[2], function(){
     fs.writeFile('/docker/'+response.env+'/app'+response.ext, config[0], function(){
       docker.command('build -t env_img .').then(function (data){
-        docker.command('run --name '+response.env+' env_img ').then(function (data_r){
+        docker.command('run --name '+response.env+' env_img ').then(function (){
           docker.command('logs').then(function (data_l){
             if (data_l.includes(random_key)){
               res.send(1);
