@@ -16,7 +16,7 @@ editor.on("change", function () {
 
 selector();
  
-function selector() {
+function selector(e) {
     var idx = document.getElementById("file-selector").value;
 
     if (idx == 0) return;
@@ -75,7 +75,7 @@ function validate(e, callback) {
         },
         error: function (err) {
             console.log("Validation failed (Cannot process request)");
-            document.getElementById("debug").innerHTML = err.responseText;
+            document.getElementById("debug").innerHTML = '<span> class="text-white">' + err.responseText + '</span>';
             if (callback) callback(0); 
         },
         success: function (data) {
@@ -128,3 +128,4 @@ function submit(e) {
 
 document.getElementById('validate').addEventListener("click", validate);
 document.getElementById('submit').addEventListener("click", submit);
+document.getElementById("file-selector").addEventListener("change", selector);
