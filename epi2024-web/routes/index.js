@@ -105,6 +105,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next){
+  console.log(req)
   if (req.body.type == "validate") {
     validate(req.body.module_inf, res, next);
   } else if (req.body.type == "submit") {
