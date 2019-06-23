@@ -83,7 +83,7 @@ function validate(e, callback) {
                 console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
             } else {
-                document.getElementById("debug").innerHTML = '<label>Debug Info</label><textarea readonly value="' + data + '"></textarea>';
+                document.getElementById("debug").innerHTML = '<label>Debug Info</label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;" value="' + data + '"></textarea>';
                 console.log("Validation failed");
                 if (callback) callback(0);
             }
@@ -116,7 +116,7 @@ function submit(e) {
             },
             error: function (err) {
                 console.log("Submition failed (Cannot process request)");
-                document.getElementById("debug").innerHTML = err.responseText;
+                document.getElementById("debug").innerHTML = '<span> class="text-white">' + err.responseText + '</span>';
             },
             success: function (data) {
                 if (data) console.log("Submition complete");
