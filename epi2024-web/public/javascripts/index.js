@@ -75,7 +75,7 @@ function validate(e, callback) {
         },
         error: function (err) {
             console.log("Validation failed (Cannot process request)");
-            document.getElementById("debug").innerHTML = '<span> class="text-white">' + err.responseText + '</span>';
+            document.getElementById("debug").innerHTML = '<span class="text-white">' + err.responseText + '</span>';
             if (callback) callback(0); 
         },
         success: function (data) {
@@ -116,7 +116,7 @@ function submit(e) {
             },
             error: function (err) {
                 console.log("Submition failed (Cannot process request)");
-                document.getElementById("debug").innerHTML = '<span> class="text-white">' + err.responseText + '</span>';
+                document.getElementById("debug").innerHTML = '<span class="text-white">' + err.responseText + '</span>';
             },
             success: function (data) {
                 if (data) console.log("Submition complete");
