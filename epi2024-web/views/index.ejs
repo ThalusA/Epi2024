@@ -9,8 +9,8 @@
       <h1 class="text-muted">Epi2024 - JS/PY Discord Bot</h1>
         <div class="container">
             <p><div class="btn-group" role="group">
-                <button type="button" class="btn btn-secondary" onchange='validate()'>Validate</button>
-                <button type="button" class="btn btn-secondary" onchange='submit()'>Submit</button>
+                <button type="button" class="btn btn-secondary" id='validate'>Validate</button>
+                <button type="button" class="btn btn-secondary" id='submit'>Submit</button>
                 <button type="button" class="btn btn-secondary col" onclick="location.href='/request'">Requests Page</button>
                 <select class="form-control col-5" id="file-selector" onchange='selector()'>
                     <option value=0 selected hidden>-- SELECT --</option>
@@ -37,10 +37,7 @@
               </div></p>
               <p style="line-height: 0.3;"><br/></p>
             </div>
-            <div class="container" id="debug" style="visibility: hidden;">
-              <label>Debug Info</label>
-              <textarea readonly id="debuginf"></textarea>
-            </div>
+            <div class="container" id="debug" style="visibility: hidden;"></div>
         </div>
     </div>
     <script type="text/javascript">

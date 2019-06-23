@@ -41,7 +41,8 @@ function selector() {
     editor.setValue(previewFiles[idx].data);
 }
 
-function validate(callback) {
+function validate(e, callback) {
+    console.log(callback);
     var env = document.getElementById("file-selector").value;
     var value = editor.getValue();
     var ext = env.substr(-3);
@@ -58,6 +59,9 @@ function validate(callback) {
         env = "python3";
     }
 
+    if (document.getElementById("debug").style.visibility == "hidden")
+        document.getElementById("debug").style.visibility = "visible";
+
     var module_inf = {
         ext: ext,
         env: env,
@@ -69,28 +73,26 @@ function validate(callback) {
             type: "validate",
             module_inf: module_inf
         },
-        error: function () {
+        error: function (err) {
+            console.log("Validation failed (Cannot process request)");
+            document.getElementById("debug").innerHTML = err.responseText;
             if (callback) callback(0); 
-            else console.log("Validation failed");
         },
         success: function (data) {
             if (data == 1){
+                console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
-                else console.log("Validation complete");
             } else {
-                if (document.getElementById("debug").style.visibility == "hidden")
-                    document.getElementById("debug").style.visibility = "visible";
-                document.getElementById("debuginf").value = data;
+                document.getElementById("debug").innerHTML = '<label>Debug Info</label><textarea readonly value="' + data + '"></textarea>';
+                console.log("Validation failed");
                 if (callback) callback(0);
-                else console.log("Validation failed");
             }
-            
         }
     });
 }
 
-function submit() {
-    validate(function (cb, env, ext, value){
+function submit(e) {
+    validate(e, function (cb, env, ext, value){
         if (cb == 0) return;
         var name = document.getElementById("name").value;
         var author = document.getElementById("author").value;
@@ -112,8 +114,9 @@ function submit() {
                 type: "submit",
                 module_inf: module_inf
             },
-            error: function () {
-                console.log("Submition failed");
+            error: function (err) {
+                console.log("Submition failed (Cannot process request)");
+                document.getElementById("debug").innerHTML = err.responseText;
             },
             success: function (data) {
                 if (data) console.log("Submition complete");
@@ -122,3 +125,6 @@ function submit() {
         });
     });
 }
+
+document.getElementById('validate').addEventListener("click", validate);
+document.getElementById('submit').addEventListener("click", submit);
