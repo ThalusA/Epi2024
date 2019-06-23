@@ -42,15 +42,15 @@ function selector(e) {
 }
 
 function validate(e, callback) {
-    console.log(callback);
     var env = document.getElementById("file-selector").value;
     var value = editor.getValue();
     var ext = env.substr(-3);
     
-    if (env == "New Module PY"){
+    if (env == 0) return;
+    else if (env == 2){
         env = "python3";
         ext = ".py";
-    } else if (env == "New Module JS"){
+    } else if (env == 1) {
         env = "node";
         ext = ".js";
     } else if (ext == ".js") {
@@ -67,12 +67,14 @@ function validate(e, callback) {
         env: env,
         data: value
     };
+
     $.ajax(this.href, {
         method: "POST",
-        data: {
+        dataType: "json",
+        data: {data: JSON.stringify({
             type: "validate",
             moduleinf: moduleinf
-        },
+        })},
         error: function (err) {
             console.log("Validation failed (Cannot process request)");
             document.getElementById("debug").innerHTML = err.responseText;
@@ -83,7 +85,7 @@ function validate(e, callback) {
                 console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
             } else {
-                document.getElementById("debug").innerHTML = '<label>Debug Info</label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;" value="' + data + '"></textarea>';
+                document.getElementById("debug").innerHTML = '<label>Debug Info</label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;text-align:left" value="' + data + '"></textarea>';
                 console.log("Validation failed");
                 if (callback) callback(0);
             }
@@ -110,10 +112,11 @@ function submit(e) {
 
         $.ajax(this.href, {
             method: "POST",
-            data: {
+            dataType: "json",
+            data: {data: JSON.stringify({
                 type: "submit",
                 moduleinf: moduleinf
-            },
+            })},
             error: function (err) {
                 console.log("Submition failed (Cannot process request)");
                 document.getElementById("debug").innerHTML = err.responseText;

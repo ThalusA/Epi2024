@@ -53,9 +53,7 @@ function requirement_py(data){
 }
 
 function validate(response, res, next){
-  console.log(response);
-  var options = new DockerOptions('machine_'+response.env, '/docker/'+response.env);
-  var docker = new Docker(options);
+  var docker = new Docker();
   var random_key = Math.random().toString(); 
   var config = Array(3);
   
@@ -71,9 +69,9 @@ function validate(response, res, next){
 
   fs.writeFile(config[1], config[2], function(){
     fs.writeFile('/docker/'+response.env+'/app'+response.ext, config[0], function(){
-      docker.command('build -t env_img .').then(function (){
-        docker.command('run --name '+response.env+' env_img ').then(function (){
-          docker.command('logs').then(function (data){
+      docker.command('build -t '+response.env+'_img ./docker/'+response.env+'/').then(function (){
+        docker.command('run -p 4000:80 ./docker/'+response.env+'/'+response.env+'_img').then(function (){
+          docker.command('logs ./docker/'+response.env+'/'+response.env+'_img').then(function (data){
             if (data.includes(random_key)){
               res.send(1);
             } else {
@@ -106,11 +104,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next){
-  
-  if (req.body.type == "validate") {
-    validate(req.body.moduleinf, res, next);
-  } else if (req.body.type == "submit") {
-    submit(req.body.moduleinf, res, next);
+  var json = JSON.parse(req.body.data);
+  if (json.type == "validate") {
+    validate(json.moduleinf, res, next);
+  } else if (json.type == "submit") {
+    submit(json.moduleinf, res, next);
   }
 });
 
