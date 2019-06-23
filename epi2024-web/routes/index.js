@@ -53,6 +53,7 @@ function requirement_py(data){
 }
 
 function validate(response, res, next){
+  console.log(response);
   var options = new DockerOptions('machine_'+response.env, '/docker/'+response.env);
   var docker = new Docker(options);
   var random_key = Math.random().toString(); 
@@ -105,11 +106,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next){
-  console.log(req)
+  
   if (req.body.type == "validate") {
-    validate(req.body.module_inf, res, next);
+    validate(req.body.moduleinf, res, next);
   } else if (req.body.type == "submit") {
-    submit(req.body.module_inf, res, next);
+    submit(req.body.moduleinf, res, next);
   }
 });
 

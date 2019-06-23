@@ -62,7 +62,7 @@ function validate(e, callback) {
     if (document.getElementById("debug").style.visibility == "hidden")
         document.getElementById("debug").style.visibility = "visible";
 
-    var module_inf = {
+    var moduleinf = {
         ext: ext,
         env: env,
         data: value
@@ -71,11 +71,11 @@ function validate(e, callback) {
         method: "POST",
         data: {
             type: "validate",
-            module_inf: module_inf
+            moduleinf: moduleinf
         },
         error: function (err) {
             console.log("Validation failed (Cannot process request)");
-            document.getElementById("debug").innerHTML = '<div class="text-white">' + err.responseText + '</div>';
+            document.getElementById("debug").innerHTML = err.responseText;
             if (callback) callback(0); 
         },
         success: function (data) {
@@ -96,7 +96,7 @@ function submit(e) {
         if (cb == 0) return;
         var name = document.getElementById("name").value;
         var author = document.getElementById("author").value;
-        var module_inf = {
+        var moduleinf = {
             name: name,
             description: document.getElementById("description").value,
             author: author,
@@ -112,11 +112,11 @@ function submit(e) {
             method: "POST",
             data: {
                 type: "submit",
-                module_inf: module_inf
+                moduleinf: moduleinf
             },
             error: function (err) {
                 console.log("Submition failed (Cannot process request)");
-                document.getElementById("debug").innerHTML = '<div class="text-white">' + err.responseText + '</div>';
+                document.getElementById("debug").innerHTML = err.responseText;
             },
             success: function (data) {
                 if (data) console.log("Submition complete");
