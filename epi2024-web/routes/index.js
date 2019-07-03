@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
+var md5 = require('md5');
 var dockerCLI = require('docker-cli-js');
 var DockerOptions = dockerCLI.Options;
 var Docker = dockerCLI.Docker;
@@ -85,7 +86,9 @@ function validate(response, res, next){
 }
 
 function submit(response, res, next){
-  fs.writeFile('/modules/'+response.name+'.json', JSON.stringify(response), function (err){
+  var name = response.name;
+  if (modulesList().includes(name)) name += ("_"+md5(response.date));
+  fs.writeFile('/modules/'+name+'.json', JSON.stringify(response), function (err){
     if (err) {res.send(0);} else {res.send(1);}
   });
 }

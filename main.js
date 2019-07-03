@@ -3,18 +3,26 @@ const client = new Discord.Client();
 const config = require('./config.json');
 const reloadModules = require('./reloadModules.js');
 const strsplit = require('strsplit');
+const net = require('net');
+
+var server = net.createServer(function (socket){
+    reloadModules.func();
+    socket.pipe(socket);
+});
+
+server.listen(8100, 'localhost');
 
 const prefix = config.prefix;
 global.Modules = [];
 Modules.reloadModules = reloadModules;
 
-client.on('ready', () =>{
+client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity(`Use this Prefix --> ${prefix}`);
     reloadModules.func();
 });
 
-client.on('message', message =>{
+client.on('message', message => {
     if (message.content.startsWith(prefix)){
         message_content = message.content.slice(prefix.length);
         tmp = strsplit(message_content, ' ', 2);

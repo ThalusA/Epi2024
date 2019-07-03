@@ -2,6 +2,30 @@ import discord
 import json
 import os 
 import sys
+import socket
+import threading
+from reloadModules import reloadModules
+
+
+
+class server_init(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+    
+    def run(self):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind(('localhost', 8101))
+        self.sock.listen(1)
+
+        while (True):
+            connection, _ = self.sock.accept()
+            del _
+            try:
+                if(connection.recv(1)):
+                    reloadModules.function(self, None, None)
+            finally:
+                connection.close()
 
 class discord_bot:
     def __init__(self):
@@ -30,3 +54,5 @@ class discord_bot:
                     print(fail)
 
 Epi2024_bot = discord_bot()
+server = server_init()
+server.start()

@@ -85,7 +85,7 @@ function validate(e, callback) {
                 console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
             } else {
-                document.getElementById("debug").innerHTML = '<label>Debug Info</label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;text-align:left" value="' + data + '"></textarea>';
+                document.getElementById("debug").innerHTML = `<label>Debug Info</label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;text-align:left" value="${data}"></textarea>`;
                 console.log("Validation failed");
                 if (callback) callback(0);
             }

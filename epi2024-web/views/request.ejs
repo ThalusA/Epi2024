@@ -10,9 +10,10 @@
       <h1 class="text-muted">Epi2024 - JS/PY Discord Bot</h1>
       <div class="container bg-primary">
         <% requestList.forEach(function (request){%>
-            <p><div class=<% if(request.state == "Validated"){"container-fluid bg-success"} else {if(request.state == "Refused") {"container-fluid bg-danger"} else {if (request.state == "Request In Progress"){"container-fluid bg-warning"}}} %>> // Replace bgcolor induced by request.state
+            <p><div id= <%= request.id + "C" %> class=<% if(request.state == "Validated"){"container-fluid bg-success"} else if (request.state == "Refused") {"container-fluid bg-danger"} else if (request.state == "Request In Progress"){"container-fluid bg-warning"} %>> // Replace bgcolor induced by request.state
                 <div class="row">
                     <div class="col"> Name of the module : <%= request.name %> Description : <%= request.description %></div>
+                    <button type="button" class="btn btn-secondary col" id=<%= request.id + "D" %>> Download File <br/> <i class="em em-arrow_down"></i></button>
                     <div class="col"> Author of the request : <%= request.author %></div>
                     <div class="col"> State of the request : <%= request.state %></div>
                     <% if (adminMode == true) {%>
@@ -37,7 +38,6 @@
     </div>
     <script type="text/javascript">
       const requestIds = <%- requestIds %>
-      const adminMode = <%- adminMode %>
     </script>
     <script type="text/javascript" src="/javascripts/request.js"></script>
   </body>
