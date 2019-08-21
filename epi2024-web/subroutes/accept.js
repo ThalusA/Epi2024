@@ -1,51 +1,35 @@
 function getRequestList() {
-    var requestList = Array();
-    var i = 0;
+    let requestList = {};
     fs.readdir('/modules', function (err, files) {
-        files.forEach(function (file, index, array) {
-            i++;
-            if (file == "example.json") return;
-            requestList.push(JSON.parse(fs.readFileSync('/modules/' + file)));
-            if (i == array.length) {
-                requestList = requestList.sort(function (a, b) {
-                    return b.date - a.date;
+        if (err) throw err;
+        for (let i = 0; i < files.length; i++)
+            if (files[i] != "example.json")
+                fs.readFile("/modules" + files[i], (err, data) => {
+                    if (err) throw err;
+                    let json = JSON.parse(data);
+                    requestList[json.id] = json;
                 });
-            }
-        });
     });
     return requestList;
 }
 
 module.exports = (req, res, next) => {
-    let requestList_object = {};
-    var net = require('net');
-    const id = req.params.id;
-    var client_py = new net.Socket();
-    var client_js = new net.Socket();
-
-    getRequestList().forEach(function (request) {
-        requestList_object[request.id] = request;
-    });
-    var json = JSON.parse(req.body.data);
-    if (requestList_object[id]) {
-        requestList_object[id].assign({
+    let requestList = getRequestList();
+    var pyclient = new net.Socket();
+    var jsclient = new net.Socket();
+    if (requestList[req.params.id]) {
+        requestList[req.params.id].assign({
             state: "Validated"
         });
-        fs.writeFile('/modules/' + requestList_object[id].name + requestList_object[id].extension, requestList_object[id], function (err) {
-            if (err) res.send(0);
-            else {
-                fs.writeFile("../modules/" + requestList_object[id].name + requestList_object[id].extension, requestList_object[id], function (err) {
-                    if (err) {
-                        client_js.connect(8100, 'localhost', function () {
-                            client_js.write(1);
-                            client_py.connect(8101, 'localhost', function () {
-                                client_py.write(1);
-                                res.send(0);
-                            });
-                        });
-                    } else res.send(1);
+        fs.writeFile('/modules/' + requestList[req.params.id].name + requestList[req.params.id].extension, requestList[req.params.id], function (err) {
+            if (err) throw err;
+            jsclient.connect(8100, 'localhost', function () {
+                jsclient.write(1);
+                pyclient.connect(8101, 'localhost', function () {
+                    pyclient.write(1);
+                    return res.status(200).end();
                 });
-            }
+            });
         });
-    } else res.send(0);
+    } else return res.status(400).end();
 };

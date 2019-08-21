@@ -1,6 +1,7 @@
 function getIdsList() {
     let requestList = {};
     fs.readdir('/modules', function (err, files) {
+        if (err) throw err;
         for (let i = 0; i < files.length; i++) 
             if (files[i] != "example.json")
                 fs.readFile("/modules/" + files[i], (err, data) => {
