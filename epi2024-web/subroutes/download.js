@@ -1,32 +1,18 @@
-function getRequestList() {
-    var requestList = Array();
-    var i = 0;
+function getIdsList() {
+    let requestList = {};
     fs.readdir('/modules', function (err, files) {
-        files.forEach(function (file, index, array) {
-            i++;
-            if (file == "example.json") return;
-            requestList.push(JSON.parse(fs.readFileSync('/modules/' + file)));
-            if (i == array.length) {
-                requestList = requestList.sort(function (a, b) {
-                    return b.date - a.date;
+        for (let i = 0; i < files.length; i++) 
+            if (files[i] != "example.json")
+                fs.readFile("/modules/" + files[i], (err, data) => {
+                    if (err) throw err;
+                    requestList[JSON.parse(data).id] = "/modules/" + files[i];
                 });
-            }
-        });
     });
     return requestList;
 }
 
 module.exports = (req, res, next) => {
-    let requestList_object = {};
-    getRequestList().forEach(function (request) {
-        requestList_object[request.id] = request;
-    });
-    var json = JSON.parse(req.body.data);
-    let id = json.id;
-    if (requestList_object[req.body.data.id]) {
-        res.send({
-            text: requestList_object[req.body.data.id].data,
-            name: requestList_object[req.body.data.id].name + requestList_object[req.body.data.id].extension
-        });
-    } else res.send(0);
+    const idList = getIdsList();
+    if (idList[req.params.id]) return res.status(200).download(idList[req.params.id]).end();
+    else return res.status(400).end();
 };

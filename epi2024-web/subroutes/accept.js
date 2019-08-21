@@ -19,7 +19,7 @@ function getRequestList() {
 module.exports = (req, res, next) => {
     let requestList_object = {};
     var net = require('net');
-
+    const id = req.params.id;
     var client_py = new net.Socket();
     var client_js = new net.Socket();
 
@@ -27,7 +27,6 @@ module.exports = (req, res, next) => {
         requestList_object[request.id] = request;
     });
     var json = JSON.parse(req.body.data);
-    let id = json.id;
     if (requestList_object[id]) {
         requestList_object[id].assign({
             state: "Validated"
