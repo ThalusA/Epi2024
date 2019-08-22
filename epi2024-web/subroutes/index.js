@@ -1,11 +1,13 @@
 function modulesList() {
+    let result = [];
     fs.readdir('../modules', (err, files) => {
         if (err) throw err;
-        return files.filter(function (f) {
+        result = files.filter(function (f) {
             ext = f.substr(-3);
             return ((ext === ".js" || ext === ".py") && f != "__pycache__");
         });
     });
+    return result;
 }
 
 function createJSON() {
