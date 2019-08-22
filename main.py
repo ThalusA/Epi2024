@@ -14,16 +14,14 @@ class server_init(threading.Thread):
         threading.Thread.__init__(self)
     
     def run(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock = socket.socket()
         self.sock.bind(('localhost', 8101))
         self.sock.listen(1)
 
         while (True):
             connection, _ = self.sock.accept()
-            del _
             try:
-                if(connection.recv(1)):
-                    reloadModules.function(self, None, None)
+                reloadModules.function(self, None, None)
             finally:
                 connection.close()
 
