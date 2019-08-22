@@ -23,7 +23,7 @@ function createJSON(modules) {
                 data: JSON.parse(data)
             };
         });
-    return JSON.stringify(dataString);
+    return dataString;
 }
 
 module.exports = (req, res, next) => {

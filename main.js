@@ -8,17 +8,9 @@ const fs = require('fs');
 const communication = net.Socket();
 
 var server = net.createServer(function (socket){
-    socket.on("data", (data) => {
-        fs.readFile("/epi2024-web/modules/" + data, (err, module) => {
-            if (err) throw err;
-            let json = JSON.parse(module);
-            fs.writeFile("/modules/" + json.name, module, (err) => {
-                if (err) throw err;
-                communication.connect(8101, 'localhost', function () {
-                    reloadModules.func();
-                });
-            });
-        });
+    if (err) throw err;
+    communication.connect(8101, 'localhost', function () {
+        reloadModules.func();
     });
 });
 

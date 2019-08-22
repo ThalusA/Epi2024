@@ -12,7 +12,7 @@ function getRequestList() {
         if (err) throw err;
         for (let i = 0; i < files.length; i++)
             if (files[i] != "example.json")
-                fs.readFile("/modules" + files[i], (err, data) => {
+                fs.readFile("/modules/" + files[i], (err, data) => {
                     if (err) throw err;
                     let json = JSON.parse(data);
                     requestList[json.id] = json;
