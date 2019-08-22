@@ -6,7 +6,6 @@ var createError = require('http-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var sass = require('node-sass-middleware');
 var compression = require('compression');
 
 var app = express();
@@ -24,14 +23,6 @@ app.use(compression());
 
 app.use('/', require('./routes/index'));
 app.use('/request', require('./routes/request'));
-
-app.use('/stylesheets', sass({
-    src: __dirname + '/sass', 
-    dest: __dirname + '/public/stylesheets',
-    debug: true,
-    outputStyle: 'compressed'
-  })
-);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -10,7 +10,7 @@ class reloadModules:
     permission = 8
 
     async def function(self, message, args):
-        if(message):
+        if (message):
             await message.add_reaction("☑")
         sys.path.append('./modules')
         for module in os.listdir('./modules'):

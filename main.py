@@ -3,28 +3,18 @@ import json
 import os 
 import sys
 import socket
-import threading
+import asyncio
 from reloadModules import reloadModules
 
-
-
-class server_init(threading.Thread):
-
-    def __init__(self):
-        threading.Thread.__init__(self)
-    
-    def run(self):
-        self.sock = socket.socket()
-        self.sock.bind(('localhost', 8101))
-        self.sock.listen(1)
-
-        while (True):
-            connection, _ = self.sock.accept()
-            try:
-                reloadModules.function(self, None, None)
-            finally:
-                connection.close()
-
+async def socketConnect(self):
+    sock = socket.socket()
+    sock.bind(('localhost', 8101))
+    sock.listen(1)
+    while (True):
+        connection, _ = sock.accept()
+        try: reloadModules.function(self, None, None)
+        finally: connection.close()
+        
 class discord_bot:
     def __init__(self):
         self.prefix = json.load(open("config.json"))["prefix"]
@@ -51,6 +41,6 @@ class discord_bot:
                     await message.channel.send(":warning: error executing the function !")
                     print(fail)
 
+
 Epi2024_bot = discord_bot()
-server = server_init()
-server.start()
+asyncio.run(socketConnect(Epi2024_bot))
