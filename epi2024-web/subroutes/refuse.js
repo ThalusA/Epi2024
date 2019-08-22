@@ -1,6 +1,5 @@
 function getRequestList() {
     let requestList = {};
-    let count = 0;
     fs.readdir('/modules', function (err, files) {
         if (err) throw err;
         for (let i = 0; i < files.length; i++)
@@ -8,10 +7,9 @@ function getRequestList() {
                 fs.readFile("/modules/" + files[i], (err, data) => {
                     if (err) throw err;
                     requestList[json.id] = JSON.parse(data);
-                    count++;
-                    if (count == files.length) return requestList;
                 });
     });
+    return requestList;
 }
 
 module.exports = (req, res, next) => {
