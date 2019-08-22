@@ -33,6 +33,6 @@ module.exports = (req, res, next) => {
     res.render('index', {
         title: "Epi2024 Bot - Home",
         modules: modules,
-        previewFiles: previewFiles
+        previewFiles: JSON.stringify(previewFiles)
     });
 };
