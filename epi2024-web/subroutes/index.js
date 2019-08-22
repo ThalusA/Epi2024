@@ -1,16 +1,15 @@
 function modulesList() {
-    let result = Array();
     fs.readdir('../modules', (err, files) => {
         if (err) throw err;
-        result.concat(files.filter(function (f) {
+        return files.filter(function (f) {
             ext = f.substr(-3);
             return ((ext === ".js" || ext === ".py") && f != "__pycache__");
-        }));
+        });
     });
-    return result;
 }
 
 function createJSON(modules) {
+    let count = 0;
     let dataString = {
         "New Module": {
             data: ""
@@ -19,11 +18,12 @@ function createJSON(modules) {
     for (let i = 0; i < modules.length; i++)
         fs.readFile("../modules/" + modules[i], (err, data) => {
             if (err) throw err;
-            else dataString[modules[idx]] = {
+            dataString[modules[idx]] = {
                 data: JSON.parse(data)
             };
+            count++;
+            if (count == module.length) return dataString;
         });
-    return dataString;
 }
 
 module.exports = (req, res, next) => {

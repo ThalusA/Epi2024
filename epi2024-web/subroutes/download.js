@@ -1,5 +1,6 @@
 function getIdsList() {
     let requestList = {};
+    let count = 0;
     fs.readdir('/modules', function (err, files) {
         if (err) throw err;
         for (let i = 0; i < files.length; i++) 
@@ -7,9 +8,10 @@ function getIdsList() {
                 fs.readFile("/modules/" + files[i], (err, data) => {
                     if (err) throw err;
                     requestList[JSON.parse(data).id] = "/modules/" + files[i];
+                    count++;
+                    if (count == files.length) return requestList;
                 });
     });
-    return requestList;
 }
 
 module.exports = (req, res, next) => {

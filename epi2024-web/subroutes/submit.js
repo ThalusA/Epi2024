@@ -1,13 +1,11 @@
 function modulesList() {
-    let result = Array();
     fs.readdir('../modules', (err, files) => {
         if (err) throw err;
-        result.concat(files.filter(function (f) {
+        return files.filter(function (f) {
             ext = f.substr(-3);
             return ((ext === ".js" || ext === ".py") && f != "__pycache__");
-        }));
+        });
     });
-    return result;
 }
 
 module.exports = (req, res, next) => {

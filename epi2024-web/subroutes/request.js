@@ -1,24 +1,22 @@
 function getUserStatus(req) {
-    if (req.query.adm == '2a23a48721f1ea526c620677f1c7f9d603188e8cfc57cb55939df4b7a8224828') {
-        return true;
-    } else {
-        return false;
-    }
+    if (req.query.adm == '2a23a48721f1ea526c620677f1c7f9d603188e8cfc57cb55939df4b7a8224828') return true;
+    else return false;
 }
 
 function getRequestList() {
     let requestList = {};
+    let count = 0;
     fs.readdir('/modules', function (err, files) {
         if (err) throw err;
         for (let i = 0; i < files.length; i++)
             if (files[i] != "example.json")
                 fs.readFile("/modules/" + files[i], (err, data) => {
                     if (err) throw err;
-                    let json = JSON.parse(data);
-                    requestList[json.id] = json;
+                    requestList[json.id] = JSON.parse(data);
+                    count++;
+                    if (count == files.length) return requestList;
                 });
     });
-    return requestList;
 }
 
 module.exports = (req, res, next) => {
