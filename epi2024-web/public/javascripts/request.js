@@ -40,7 +40,7 @@ function download(id){
     });
 }
 
-requestList.forEach(function (id) {
+requestList.keys().forEach(function (id) {
     document.getElementById(id+"V").addEventListener("click", function() {
         accept(id);
     });

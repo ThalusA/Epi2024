@@ -32,6 +32,100 @@ function requirement(data, env) {
     }
 }
 
+function init(authrequest, random_key, cb) {
+    authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
+        json: true,
+        body: {
+            "command": ["/bin/mkdir /root/" + random_key],
+            "environment": {},
+            "wait-for-websocket": false,
+            "record-output": false,
+            "interactive": true
+        }
+    }, (error) => {
+        if (error) throw error;
+        authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
+            body: req.body.data
+        }, (error) => {
+            if (error) throw error;
+            let filename;
+            switch (req.body.env) {
+                case "node":
+                    filename = "/package.json";
+                    break;
+                case "python3":
+                    filename = "/requirements.txt";
+                    break;
+            }
+            authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
+                body: requirement(req.body.data, req.body.env)
+            }, (error) => {
+                if (error) throw error;
+                cb();
+            });
+        });
+    });
+}
+
+function install(authrequest, random_key, cb) {
+    let command;
+    switch (req.body.env) {
+        case "node":
+            command = "/usr/local/bin/npm install -g /root/" + random_key;
+            break;
+        case "python3":
+            command = "/usr/bin/pip3 install -r /root/" + random_key + "/requirements.txt";
+            break;
+    }
+    authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
+        json: true,
+        body: {
+            "command": [command],
+            "environment": {},
+            "wait-for-websocket": false,
+            "record-output": false,
+            "interactive": true
+        }
+    }, (error) => {
+        if (error) throw error;
+        cb();
+    });
+}
+
+function execute(authrequest, random_key) {
+    let start;
+    switch (req.body.env) {
+        case "node":
+            start = "/usr/local/bin/node /root/" + random_key + "/app.js";
+            break;
+        case "python3":
+            start = "/usr/bin/python3 /root/" + random_key + "/app.py";
+            break;
+    }
+    authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
+        json: true,
+        body: {
+            "command": [start],
+            "environment": {},
+            "wait-for-websocket": false,
+            "record-output": true,
+            "interactive": true
+        }
+    }, (error, _, body) => {
+        if (error) throw error;
+        const json = JSON.parse(body);
+        authrequest.get("https://localhost:8443" + json.output[1], (error, __, body) => {
+            if (error) throw error;
+            const stdout = JSON.parse(body);
+            authrequest.get("https://localhost:8443" + json.output[2], (error, ___, body) => {
+                if (error) throw error;
+                const stderr = JSON.parse(body);
+                cb(stdout, stderr);
+            });
+        });
+    });
+}
+
 module.exports = (req, res, next) => {
     authentification((key, cert) => {
         const random_key = Math.random().toString().slice(2);
@@ -41,87 +135,15 @@ module.exports = (req, res, next) => {
                 cert: cert
             }
         });
-        authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
-            json: true,
-            body: {
-                "command": ["/bin/mkdir /root/" + random_key],
-                "environment": {},
-                "wait-for-websocket": false,
-                "record-output": false,
-                "interactive": true
-            }
-        }, (error) => {
-            if (error) throw error;
-            authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {body: req.body.data}, (error) => {
-                if (error) throw error;
-                let filename;
-                switch (req.body.env) {
-                    case "node":
-                        filename = "/package.json";
-                        break;
-                    case "python3":
-                        filename = "/requirements.txt";
-                        break;
-                }
-                authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {body: requirement(req.body.data, req.body.env)}, (error) => {
-                    if (error) throw error;
-                    let command;
-                    switch (req.body.env) {
-                        case "node":
-                            command = "/usr/local/bin/npm install -g /root/" + random_key;
-                            break;
-                        case "python3":
-                            command = "/usr/bin/pip3 install -r /root/" + random_key + "/requirements.txt";
-                            break;
-                    }
-                    authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
-                        json: true,
-                        body: {
-                            "command": [command],
-                            "environment": {},
-                            "wait-for-websocket": false,
-                            "record-output": false,
-                            "interactive": true
-                        }
-                    }, (error) => {
-                        if (error) throw error;
-                        let start;
-                        switch (req.body.env) {
-                            case "node":
-                                start = "/usr/local/bin/node /root/" + random_key + "/app.js";
-                                break;
-                            case "python3":
-                                start = "/usr/bin/python3 /root/" + random_key + "/app.py";
-                                break;
-                        }
-                        authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
-                            json: true,
-                            body: {
-                                "command": [start],
-                                "environment": {},
-                                "wait-for-websocket": false,
-                                "record-output": true,
-                                "interactive": true
-                            }
-                        }, (error, _, body) => {
-                            if (error) throw error;
-                            const json = JSON.parse(body);
-                            authrequest.get("https://localhost:8443" + json.output[1], (error, __, body) => {
-                                if (error) throw error;
-                                const stdout = JSON.parse(body);
-                                authrequest.get("https://localhost:8443" + json.output[2], (error, ___, body) => {
-                                    if (error) throw error;
-                                    const stderr = JSON.parse(body);
-                                    return res.status(200).json({
-                                        stdout: stdout,
-                                        stderr: stderr
-                                    });
-                                });
-                            });
-                        });
+        init(authrequest, random_key, () => {
+            install(authrequest, random_key, () => {
+                execute(authrequest, random_key, (stdout, stderr) => {
+                    return res.status(200).json({
+                        stdout: stdout,
+                        stderr: stderr
                     });
                 });
             });
-        }); 
+        });
     });
 };

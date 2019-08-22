@@ -7,44 +7,29 @@ function getUserStatus(req) {
 }
 
 function getRequestList() {
-    var requestList = Array();
-    var i = 0;
+    let requestList = {};
     fs.readdir('/modules', function (err, files) {
-        files.forEach(function (file, index, array) {
-            i++;
-            if (file == "example.json") return;
-            requestList.push(JSON.parse(fs.readFileSync('/modules/' + file)));
-            if (i == array.length) {
-                requestList = requestList.sort(function (a, b) {
-                    return b.date - a.date;
+        if (err) throw err;
+        for (let i = 0; i < files.length; i++)
+            if (files[i] != "example.json")
+                fs.readFile("/modules" + files[i], (err, data) => {
+                    if (err) throw err;
+                    let json = JSON.parse(data);
+                    requestList[json.id] = json;
                 });
-            }
-        });
     });
     return requestList;
-}
-
-function getRequestIds(requestList) {
-    var requestIds = Array();
-    for (var index = 0; index < requestList.length; index++) {
-        requestIds.push(requestList[index].id);
-    }
-    return requestIds;
 }
 
 module.exports = (req, res, next) => {
     /* INIT VAR */
     var adminMode = getUserStatus(req);
     var requestList = getRequestList();
-    var requestIds = getRequestIds(requestList);
-    requestList.forEach(function (request) {
-        requestList_object[request.id] = request;
-    });
     /* RENDER ALL VAR */
     res.render('request', {
         title: "Epi2024 Bot - Requests",
         adminMode: adminMode,
-        requestList: requestList,
-        requestIds: requestIds
+        requestList: requestList.values(),
+        requestIds: requestList.keys()
     });
 };

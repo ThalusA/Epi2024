@@ -15,8 +15,8 @@ function getRequestList() {
 
 module.exports = (req, res, next) => {
     let requestList = getRequestList();
-    var pyclient = new net.Socket();
-    var jsclient = new net.Socket();
+    let pyclient = new net.Socket();
+    let jsclient = new net.Socket();
     if (requestList[req.params.id]) {
         requestList[req.params.id].assign({
             state: "Validated"
