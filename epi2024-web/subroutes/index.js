@@ -22,7 +22,7 @@ function createJSON(modules) {
                 data: JSON.parse(data)
             };
             count++;
-            if (count == module.length) return dataString;
+            if (count == modules.length) return dataString;
         });
 }
 
