@@ -11,7 +11,6 @@ function modulesList() {
 }
 
 function createJSON() {
-    let count = 0;
     let dataString = {
         "New Module": {
             data: ""
@@ -26,14 +25,12 @@ function createJSON() {
         for (let i = 0; i < modules.length; i++)
             fs.readFile("../modules/" + modules[i], (err, data) => {
                 if (err) throw err;
-                dataString[modules[idx]] = {
+                dataString[modules[i]] = {
                     data: JSON.parse(data)
                 };
-                count++;
-                if (count == modules.length) return dataString;
             });
     });
-    
+    return dataString;
 }
 
 module.exports = (req, res, next) => {
