@@ -130,6 +130,7 @@ module.exports = (req, res, next) => {
     authentification((key, cert) => {
         const random_key = Math.random().toString().slice(2);
         const authrequest = request.defaults({
+            rejectUnauthorized: false,
             agentOptions: {
                 key: key,
                 cert: cert
