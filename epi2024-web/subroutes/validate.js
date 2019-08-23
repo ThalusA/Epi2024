@@ -43,13 +43,12 @@ function init(req, authrequest, random_key, cb) {
             "interactive": true
         }
     }, (error, _, body) => {
-        console.log(body);
         if (error) throw error;
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
             if (error) throw error;
             authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
                 body: req.body.data
-            }, (error) => {
+            }, (error, _, body) => {
                 if (error) throw error;
                 console.log(body);
                 let filename;
@@ -63,7 +62,7 @@ function init(req, authrequest, random_key, cb) {
                 }
                 authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
                     body: requirement(req.body.data, req.body.env)
-                }, (error) => {
+                }, (error, _, body) => {
                     if (error) throw error;
                     console.log(body);
                     cb();
