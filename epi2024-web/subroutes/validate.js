@@ -1,7 +1,7 @@
 function authentification(cb) {
-    fs.readFile('../key.pem', (err, key) => {
+    fs.readFile('../epi2024-web/key.pem', (err, key) => {
         if (err) throw err;
-        fs.readFile('../cert.pem', (err, cert) => {
+        fs.readFile('../epi2024-web/cert.pem', (err, cert) => {
             if (err) throw err;
             cb(key, cert);
         });
