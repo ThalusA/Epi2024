@@ -1,45 +1,39 @@
-function modulesList() {
-    let result = [];
+function modulesList(cb) {
     fs.readdir('../modules', (err, files) => {
         if (err) throw err;
-        result = files.filter(function (f) {
+        cb(files.filter(function (f) {
             ext = f.substr(-3);
             return ((ext === ".js" || ext === ".py") && f != "__pycache__");
-        });
+        }));
     });
-    return result;
 }
 
-function createJSON() {
+function createJSON(modules, cb) {
+    let count = 0;
     let dataString = {
         "New Module": {
             data: ""
         }
     };
-    fs.readdir('../modules', (err, files) => {
-        if (err) throw err;
-        let modules = files.filter(function (f) {
-            ext = f.substr(-3);
-            return ((ext === ".js" || ext === ".py") && f != "__pycache__");
+    for (let i = 0; i < modules.length; i++)
+        fs.readFile("../modules/" + modules[i], (err, data) => {
+            if (err) throw err;
+            dataString[modules[i]] = {
+                data: data
+            };
+            count++;
+            if (count == modules.length) cb(dataString);
         });
-        for (let i = 0; i < modules.length; i++)
-            fs.readFile("../modules/" + modules[i], (err, data) => {
-                if (err) throw err;
-                dataString[modules[i]] = {
-                    data: data
-                };
-            });
-    });
-    return dataString;
 }
 
 module.exports = (req, res, next) => {
-    const modules = modulesList();
-    const previewFiles = createJSON();
-    /* RENDER ALL VAR */
-    res.render('index', {
-        title: "Epi2024 Bot - Home",
-        modules: modules,
-        previewFiles: JSON.stringify(previewFiles)
+    modulesList((modules) => {
+        createJSON(modules, (files) => {
+            res.render('index', {
+                title: "Epi2024 Bot - Home",
+                modules: modules,
+                previewFiles: JSON.stringify(files)
+            });
+        });
     });
 };
