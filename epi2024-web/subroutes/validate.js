@@ -42,26 +42,32 @@ function init(req, authrequest, random_key, cb) {
             "record-output": false,
             "interactive": true
         }
-    }, (error) => {
+    }, (error, _, body) => {
+        console.log(body);
         if (error) throw error;
-        authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
-            body: req.body.data
-        }, (error) => {
-            if (error) throw error;
-            let filename;
-            switch (req.body.env) {
-                case "node":
-                    filename = "/package.json";
-                    break;
-                case "python3":
-                    filename = "/requirements.txt";
-                    break;
-            }
-            authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
-                body: requirement(req.body.data, req.body.env)
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+            if (error || body.status != "Success") throw error || body.err;
+            authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
+                body: req.body.data
             }, (error) => {
                 if (error) throw error;
-                cb();
+                console.log(body);
+                let filename;
+                switch (req.body.env) {
+                    case "node":
+                        filename = "/package.json";
+                        break;
+                    case "python3":
+                        filename = "/requirements.txt";
+                        break;
+                }
+                authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
+                    body: requirement(req.body.data, req.body.env)
+                }, (error) => {
+                    if (error) throw error;
+                    console.log(body);
+                    cb();
+                });
             });
         });
     });
@@ -86,9 +92,13 @@ function install(req, authrequest, random_key, cb) {
             "record-output": false,
             "interactive": true
         }
-    }, (error) => {
+    }, (error, _, body) => {
         if (error) throw error;
-        cb();
+        console.log(body);
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+            if (error || body.status != "Success") throw error || body.err;
+            cb();
+        });     
     });
 }
 
@@ -113,14 +123,12 @@ function execute(req, authrequest, random_key) {
         }
     }, (error, _, body) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, ____, body) => {
-            if (error) throw error;
-            console.log(body);
-            throw "FINISH";
-            authrequest.get("https://localhost:8443" + json.output[1], (error, __, body) => {
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+            if (error || body.status != "Success") throw error || body.err;
+            authrequest.get("https://localhost:8443" + body.metadata.output[1], (error, _, body) => {
                 if (error) throw error;
                 const stdout = body;
-                authrequest.get("https://localhost:8443" + json.output[2], (error, ___, body) => {
+                authrequest.get("https://localhost:8443" + body.metadata.output[2], (error, _, body) => {
                     if (error) throw error;
                     const stderr = body;
                     cb(stdout, stderr);
