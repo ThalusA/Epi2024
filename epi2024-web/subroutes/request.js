@@ -29,8 +29,8 @@ module.exports = (req, res, next) => {
             res.render('request', {
                 title: "Epi2024 Bot - Requests",
                 adminMode: bool,
-                requestList: requestList.values(),
-                requestIds: requestList.keys()
+                requestList: Object(requestList).values(),
+                requestIds: Object(requestList).keys()
             });
         });
     });
