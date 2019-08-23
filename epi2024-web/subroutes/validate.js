@@ -46,7 +46,7 @@ function init(req, authrequest, random_key, cb) {
         console.log(body);
         if (error) throw error;
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
-            if (error || body.status != "Success") throw error || body.err;
+            if (error || body.status != "Success") throw (error || body.err);
             authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
                 body: req.body.data
             }, (error) => {
@@ -96,7 +96,7 @@ function install(req, authrequest, random_key, cb) {
         if (error) throw error;
         console.log(body);
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
-            if (error || body.status != "Success") throw error || body.err;
+            if (error || body.status != "Success") throw (error || body.err);
             cb();
         });     
     });
@@ -124,7 +124,7 @@ function execute(req, authrequest, random_key) {
     }, (error, _, body) => {
         if (error) throw error;
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
-            if (error || body.status != "Success") throw error || body.err;
+            if (error || body.status != "Success") throw (error || body.err);
             authrequest.get("https://localhost:8443" + body.metadata.output[1], (error, _, body) => {
                 if (error) throw error;
                 const stdout = body;
