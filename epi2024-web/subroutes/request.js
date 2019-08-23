@@ -14,12 +14,12 @@ function getRequestList(cb) {
                     if (err) throw err;
                     requestList[json.id] = JSON.parse(data);
                     count++;
-                    if (count == files.length) cb(JSON.stringify(Object.values(requestList)), JSON.stringify(Object.keys(requestList)));
+                    if (count == files.length) cb(Object.values(requestList), JSON.stringify(Object.keys(requestList)));
                 });
             else {
                 count++;
                 if (count == files.length) 
-                cb(JSON.stringify(Object.values(requestList)), JSON.stringify(Object.keys(requestList)));
+                cb(Object.values(requestList), JSON.stringify(Object.keys(requestList)));
             }
     });
 }
