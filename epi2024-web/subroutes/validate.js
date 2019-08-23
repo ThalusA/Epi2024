@@ -111,12 +111,12 @@ function execute(req, authrequest, random_key, cb) {
         }
     }, (error, _, body) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, execution) => {
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
             if (error) throw error;
-            console.log(execution);
-            authrequest.get("https://localhost:8443" + execution.metadata.metadata.output[1], (error, _, stdout) => {
+            let json = JSON.parse(execution);
+            authrequest.get("https://localhost:8443" + json.metadata.metadata.output[1], (error, _, stdout) => {
                 if (error) throw error;
-                authrequest.get("https://localhost:8443" + execution.metadata.metadata.output[2], (error, _, stderr) => {
+                authrequest.get("https://localhost:8443" + json.metadata.metadata.output[2], (error, _, stderr) => {
                     if (error) throw error;
                     cb(stdout, stderr);
                 });
