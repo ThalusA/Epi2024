@@ -65,7 +65,7 @@ function validate(e, callback) {
     }
 
     if (document.getElementById("debug").style.visibility == "hidden")
-        document.getElementById("debug").style.visibility = "visible";
+        
 
     document.getElementById("loader").style.visibility = "visible";
     fetch('/validate', {
@@ -82,6 +82,7 @@ function validate(e, callback) {
     }).then(function (response) {
         response.json().then(function (data) {
             document.getElementById("debugpre").innerText = JSON.stringify(data);
+            document.getElementById("debug").style.visibility = "visible";
             if (response.ok) {
                 console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
