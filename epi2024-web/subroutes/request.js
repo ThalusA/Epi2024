@@ -14,23 +14,23 @@ function getRequestList(cb) {
                     if (err) throw err;
                     requestList[json.id] = JSON.parse(data);
                     count++;
-                    if (count == files.length) cb(requestList);
+                    if (count == files.length) cb(requestList.values(), requestList.keys());
                 });
             else {
                 count++;
-                if (count == files.length) cb(requestList);
+                if (count == files.length) cb(requestList.values(), requestList.keys());
             }
     });
 }
 
 module.exports = (req, res, next) => {
     getUserStatus(req.query.adm, (bool) => {
-        getRequestList((requestList) => {
+        getRequestList((values, keys) => {
             res.render('request', {
                 title: "Epi2024 Bot - Requests",
                 adminMode: bool,
-                requestList: Object(requestList).values(),
-                requestIds: Object(requestList).keys()
+                requestList: values,
+                requestIds: keys
             });
         });
     });
