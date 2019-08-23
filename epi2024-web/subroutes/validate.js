@@ -32,7 +32,7 @@ function requirement(data, env) {
     }
 }
 
-function init(authrequest, random_key, cb) {
+function init(req, authrequest, random_key, cb) {
     authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
         json: true,
         body: {
@@ -67,7 +67,7 @@ function init(authrequest, random_key, cb) {
     });
 }
 
-function install(authrequest, random_key, cb) {
+function install(req, authrequest, random_key, cb) {
     let command;
     switch (req.body.env) {
         case "node":
@@ -92,7 +92,7 @@ function install(authrequest, random_key, cb) {
     });
 }
 
-function execute(authrequest, random_key) {
+function execute(req, authrequest, random_key) {
     let start;
     switch (req.body.env) {
         case "node":
@@ -135,9 +135,9 @@ module.exports = (req, res, next) => {
                 cert: cert
             }
         });
-        init(authrequest, random_key, () => {
-            install(authrequest, random_key, () => {
-                execute(authrequest, random_key, (stdout, stderr) => {
+        init(req, authrequest, random_key, () => {
+            install(req, authrequest, random_key, () => {
+                execute(req, authrequest, random_key, (stdout, stderr) => {
                     return res.status(200).json({
                         stdout: stdout,
                         stderr: stderr
