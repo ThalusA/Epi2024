@@ -26,7 +26,7 @@ function createJSON() {
             fs.readFile("../modules/" + modules[i], (err, data) => {
                 if (err) throw err;
                 dataString[modules[i]] = {
-                    data: JSON.parse(data)
+                    data: data
                 };
             });
     });
