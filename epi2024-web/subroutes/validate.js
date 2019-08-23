@@ -43,7 +43,6 @@ function init(req, authrequest, random_key, cb) {
             body: Buffer.from(req.body.data, 'utf8'),
         }, (error, _, body) => {
             if (error) throw error;
-            console.log(body);
             let filename;
             switch (req.body.env) {
                 case "node":
@@ -57,7 +56,6 @@ function init(req, authrequest, random_key, cb) {
                 body: Buffer.from(requirement(req.body.data, req.body.env), 'utf8'),
             }, (error, _, body) => {
                 if (error) throw error;
-                console.log(body);
                 cb();
             });
         });
@@ -115,6 +113,7 @@ function execute(req, authrequest, random_key, cb) {
         if (error) throw error;
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, execution) => {
             if (error) throw error;
+            console.log(execution)
             authrequest.get("https://localhost:8443" + execution.metadata.output[1], (error, _, body) => {
                 if (error) throw error;
                 const stdout = body;
