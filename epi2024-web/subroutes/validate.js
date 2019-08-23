@@ -120,14 +120,14 @@ function execute(req, authrequest, random_key) {
             "record-output": true,
             "interactive": true
         }
-    }, (error, _, body) => {
+    }, (error, _, execution) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+        authrequest.get("https://localhost:8443" + execution.operation + "/wait", (error, _, body) => {
             if (error) throw error;
-            authrequest.get("https://localhost:8443" + body.metadata.output[1], (error, _, body) => {
+            authrequest.get("https://localhost:8443" + execution.metadata.output[1], (error, _, body) => {
                 if (error) throw error;
                 const stdout = body;
-                authrequest.get("https://localhost:8443" + body.metadata.output[2], (error, _, body) => {
+                authrequest.get("https://localhost:8443" + execution.metadata.output[2], (error, _, body) => {
                     if (error) throw error;
                     const stderr = body;
                     cb(stdout, stderr);
