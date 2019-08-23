@@ -81,7 +81,7 @@ function validate(e, callback) {
         })
     }).then(function (response) {
         response.json().then(function (data) {
-            document.getElementById("debug").innerHTML = `<label>Debug Info< /label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;text-align:left" value="${JSON.stringify(data)}"></textarea>`;
+            document.getElementById("debugpre").innerText = JSON.stringify(data);
             if (response.ok) {
                 console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
@@ -95,7 +95,7 @@ function validate(e, callback) {
         });
     }).catch(function (error) {
         console.log("Validation failed (Cannot process request)");
-        document.getElementById("debug").innerHTML = error.message;
+        document.getElementById("debugpre").innerText = error.message;
         if (callback) callback(0);
         else document.getElementById("loader").style.visibility = "hidden";
     });
@@ -127,7 +127,7 @@ function submit(e) {
                 document.getElementById("loader").style.visibility = "hidden";
             }).catch(function (error) {
                 console.log("Submition failed (Cannot process request)");
-                document.getElementById("debug").innerHTML = error.message;
+                document.getElementById("debugpre").innerText = error.message;
                 document.getElementById("loader").style.visibility = "hidden";
             });
     });
