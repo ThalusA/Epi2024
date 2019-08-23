@@ -113,11 +113,10 @@ function execute(req, authrequest, random_key, cb) {
         if (error) throw error;
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, execution) => {
             if (error) throw error;
-            console.log(execution)
-            authrequest.get("https://localhost:8443" + execution.metadata.output[1], (error, _, body) => {
+            authrequest.get("https://localhost:8443" + execution.metadata.metadata.output[1], (error, _, body) => {
                 if (error) throw error;
                 const stdout = body;
-                authrequest.get("https://localhost:8443" + execution.metadata.output[2], (error, _, body) => {
+                authrequest.get("https://localhost:8443" + execution.metadata.metadata.output[2], (error, _, body) => {
                     if (error) throw error;
                     const stderr = body;
                     cb(stdout, stderr);
@@ -137,7 +136,6 @@ module.exports = (req, res, next) => {
                 cert: cert
             }
         });
-        console.log(random_key)
         init(req, authrequest, random_key, () => {
             install(req, authrequest, random_key, () => {
                 execute(req, authrequest, random_key, (stdout, stderr) => {
