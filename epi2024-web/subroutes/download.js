@@ -1,16 +1,20 @@
 function getIdsList(cb) {
     let count = 0;
     let requestList = {};
-    fs.readdir('/modules', function (err, files) {
+    fs.readdir('../epi2024-web/modules', function (err, files) {
         if (err) throw err;
         for (let i = 0; i < files.length; i++) 
             if (files[i] != "example.json")
-                fs.readFile("/modules/" + files[i], (err, data) => {
+                fs.readFile('../epi2024-web/modules/' + files[i], (err, data) => {
                     if (err) throw err;
-                    requestList[JSON.parse(data).id] = "/modules/" + files[i];
+                    requestList[JSON.parse(data).id] = "'../epi2024-web/modules/'" + files[i];
                     count++;
                     if (count == files.length) cb(requestList);
                 });
+            else {
+                count++;
+                if (count == files.length) cb(requestList);
+            }
     });
 }
 
