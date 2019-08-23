@@ -2,6 +2,7 @@ express = require('express');
 fs = require('fs');
 request = require('request');
 net = require('net');
+crypto = require('crypto');
 let createError = require('http-errors');
 let path = require('path');
 let logger = require('morgan');

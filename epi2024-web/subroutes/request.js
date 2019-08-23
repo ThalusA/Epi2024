@@ -1,5 +1,5 @@
 function getUserStatus(adm, cb) {
-    if (adm == '2a23a48721f1ea526c620677f1c7f9d603188e8cfc57cb55939df4b7a8224828') cb(true);
+    if (crypto.createHash("sha512").update(adm).digest("hex") == 'fb67c95cf4c8a94f1d560bcf04699c500c527bf95de846fa2853bcdcdf0557a670ba8ea5d209cdf84fed3b3dd7d3342c81632f301698dc0c4ba67e85af2c5270') cb(true);
     else cb(false);
 }
 
