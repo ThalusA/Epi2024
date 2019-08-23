@@ -47,7 +47,7 @@ function init(req, authrequest, random_key, cb) {
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
             if (error) throw error;
             authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
-                body: req.body.data
+                body: Buffer.from(req.body.data, 'utf8'),
             }, (error, _, body) => {
                 if (error) throw error;
                 console.log(body);
@@ -61,7 +61,7 @@ function init(req, authrequest, random_key, cb) {
                         break;
                 }
                 authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
-                    body: requirement(req.body.data, req.body.env)
+                    body: Buffer.from(requirement(req.body.data, req.body.env), 'utf8'),
                 }, (error, _, body) => {
                     if (error) throw error;
                     console.log(body);
