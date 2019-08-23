@@ -113,14 +113,18 @@ function execute(req, authrequest, random_key) {
         }
     }, (error, _, body) => {
         if (error) throw error;
-        const json = JSON.parse(body);
-        authrequest.get("https://localhost:8443" + json.output[1], (error, __, body) => {
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, ____, body) => {
             if (error) throw error;
-            const stdout = JSON.parse(body);
-            authrequest.get("https://localhost:8443" + json.output[2], (error, ___, body) => {
+            console.log(body);
+            throw "FINISH";
+            authrequest.get("https://localhost:8443" + json.output[1], (error, __, body) => {
                 if (error) throw error;
-                const stderr = JSON.parse(body);
-                cb(stdout, stderr);
+                const stdout = body;
+                authrequest.get("https://localhost:8443" + json.output[2], (error, ___, body) => {
+                    if (error) throw error;
+                    const stderr = body;
+                    cb(stdout, stderr);
+                });
             });
         });
     });
