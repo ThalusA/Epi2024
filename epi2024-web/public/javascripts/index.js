@@ -67,6 +67,7 @@ function validate(e, callback) {
     if (document.getElementById("debug").style.visibility == "hidden")
         document.getElementById("debug").style.visibility = "visible";
 
+    document.getElementById("loader").style.visibility = "visible";
     fetch('/validate', {
         method: "POST",
         headers: new Headers({
@@ -80,19 +81,23 @@ function validate(e, callback) {
         })
     }).then(function (response) {
         response.json().then(function (data) {
-            document.getElementById("debug").innerHTML = `<label>Debug Info</label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;text-align:left" value="${JSON.stringify(data)}"></textarea>`;
+            document.getElementById("debug").innerHTML = `<label>Debug Info< /label><textarea readonly style="background-color:#1D2024;color:#D1EDFF;text-align:left" value="${JSON.stringify(data)}"></textarea>`;
             if (response.ok) {
                 console.log("Validation complete");
                 if (callback) callback(1, env, ext, value);
+                else document.getElementById("loader").style.visibility = "hidden";
             } else {
                 console.log("Validation failed");
                 if (callback) callback(0);
+                else document.getElementById("loader").style.visibility = "hidden";
+
             }
         });
     }).catch(function (error) {
         console.log("Validation failed (Cannot process request)");
         document.getElementById("debug").innerHTML = error.message;
         if (callback) callback(0);
+        else document.getElementById("loader").style.visibility = "hidden";
     });
 }
 
@@ -119,9 +124,11 @@ function submit(e) {
             }).then(function (response) {
                 if (response.ok) console.log("Submition complete");
                 else console.log("Submition failed");
+                document.getElementById("loader").style.visibility = "hidden";
             }).catch(function (error) {
                 console.log("Submition failed (Cannot process request)");
                 document.getElementById("debug").innerHTML = error.message;
+                document.getElementById("loader").style.visibility = "hidden";
             });
     });
 }
