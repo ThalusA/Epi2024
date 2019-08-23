@@ -16,7 +16,7 @@ function createJSON(modules, cb) {
         }
     };
     for (let i = 0; i < modules.length; i++)
-        fs.readFile("../modules/" + modules[i], (err, data) => {
+        fs.readFile("../modules/" + modules[i], "utf8", (err, data) => {
             if (err) throw err;
             dataString[modules[i]] = {
                 data: data
