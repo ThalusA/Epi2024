@@ -33,40 +33,32 @@ function requirement(data, env) {
 }
 
 function init(req, authrequest, random_key, cb) {
-    authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
-        json: true,
-        body: {
-            "command": ["/bin/mkdir /root/" + random_key],
-            "environment": {},
-            "wait-for-websocket": false,
-            "record-output": false,
-            "interactive": true
+    authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key, {
+        headers: {
+            "X-LXD-type": "directory"
         }
     }, (error, _, body) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+        authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
+            body: Buffer.from(req.body.data, 'utf8'),
+        }, (error, _, body) => {
             if (error) throw error;
-            authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
-                body: Buffer.from(req.body.data, 'utf8'),
+            console.log(body);
+            let filename;
+            switch (req.body.env) {
+                case "node":
+                    filename = "/package.json";
+                    break;
+                case "python3":
+                    filename = "/requirements.txt";
+                    break;
+            }
+            authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
+                body: Buffer.from(requirement(req.body.data, req.body.env), 'utf8'),
             }, (error, _, body) => {
                 if (error) throw error;
                 console.log(body);
-                let filename;
-                switch (req.body.env) {
-                    case "node":
-                        filename = "/package.json";
-                        break;
-                    case "python3":
-                        filename = "/requirements.txt";
-                        break;
-                }
-                authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
-                    body: Buffer.from(requirement(req.body.data, req.body.env), 'utf8'),
-                }, (error, _, body) => {
-                    if (error) throw error;
-                    console.log(body);
-                    cb();
-                });
+                cb();
             });
         });
     });
@@ -146,6 +138,7 @@ module.exports = (req, res, next) => {
                 cert: cert
             }
         });
+        console.log(random_key)
         init(req, authrequest, random_key, () => {
             install(req, authrequest, random_key, () => {
                 execute(req, authrequest, random_key, (stdout, stderr) => {
