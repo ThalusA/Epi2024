@@ -111,7 +111,7 @@ function execute(req, authrequest, random_key, cb) {
         }
     }, (error, _, body) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error) => {
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
             if (error) throw error;
             let json = JSON.parse(body);	            
             authrequest.get("https://localhost:8443" + json.metadata.metadata.output[1], (error, _, stdout) => {	
