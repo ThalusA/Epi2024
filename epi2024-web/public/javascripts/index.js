@@ -81,7 +81,7 @@ function validate(e, callback) {
         })
     }).then(function (response) {
         response.json().then(function (data) {
-            document.getElementById("debugpre").innerText = JSON.stringify(data);
+            document.getElementById("debugpre").innerText = data.replace("\n", "\r\n"));
             document.getElementById("debug").style.visibility = "visible";
             if (response.ok) {
                 console.log("Validation complete");

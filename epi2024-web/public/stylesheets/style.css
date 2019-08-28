@@ -13,6 +13,10 @@
   animation: spin 1s linear infinite;
 }
 
+.debugpre {
+  white-space: pre;
+}
+
 /* Safari */
 @-webkit-keyframes spin {
   0% {
