@@ -66,10 +66,10 @@ function install(req, authrequest, random_key, cb) {
     let command;
     switch (req.body.env) {
         case "node":
-            command = "npm install -g /root/" + random_key;
+            command = "ash -c \"npm install -g /root/" + random_key + "\"";
             break;
         case "python3":
-            command = "pip3 install -r /root/" + random_key + "/requirements.txt";
+            command = "ash -c \"pip3 install -r /root/" + random_key + "/requirements.txt\"";
             break;
     }
     authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
@@ -94,10 +94,10 @@ function execute(req, authrequest, random_key, cb) {
     let start;
     switch (req.body.env) {
         case "node":
-            start = "node /root/" + random_key + "/app.js > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt";
+            start = "ash -c \"node /root/" + random_key + "/app.js > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt\"";
             break;
         case "python3":
-            start = "python3 /root/" + random_key + "/app.py > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt";
+            start = "ash -c \"python3 /root/" + random_key + "/app.py > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt\"";
             break;
     }
     authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
