@@ -79,7 +79,8 @@ function install(req, authrequest, random_key, cb) {
             "environment": {},
             "wait-for-websocket": false,
             "record-output": false,
-            "interactive": true
+            "interactive": true,
+            "user": 0
         }
     }, (error, _, body) => {
         if (error) throw error;
@@ -107,7 +108,8 @@ function execute(req, authrequest, random_key, cb) {
             "environment": {},
             "wait-for-websocket": false,
             "record-output": true,
-            "interactive": false
+            "interactive": false,
+            "user": 0
         }
     }, (error, _, body) => {
         if (error) throw error;
