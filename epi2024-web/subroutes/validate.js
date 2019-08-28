@@ -94,10 +94,10 @@ function execute(req, authrequest, random_key, cb) {
     let start;
     switch (req.body.env) {
         case "node":
-            start = "ash -c \"node /root/" + random_key + "/app.js > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt\"";
+            start = "ash -c \"node /root/" + random_key + "/app.js\"";
             break;
         case "python3":
-            start = "ash -c \"python3 /root/" + random_key + "/app.py > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt\"";
+            start = "ash -c \"python3 /root/" + random_key + "/app.py\"";
             break;
     }
     authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
@@ -113,14 +113,12 @@ function execute(req, authrequest, random_key, cb) {
         if (error) throw error;
         authrequest.get("https://localhost:8443" + body.operation + "/wait", (error) => {
             if (error) throw error;
-            authrequest.get("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/stdout.txt", (error, _, stdout) => {
+            let json = JSON.parse(body);	            
+            authrequest.get("https://localhost:8443" + json.metadata.metadata.output[1], (error, _, stdout) => {	
                 if (error) throw error;
-                authrequest.get("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/stderr.txt" , (error, _, stderr) => {
+                authrequest.get("https://localhost:8443" + json.metadata.metadata.output[2], (error, _, stderr) => {
                     if (error) throw error;
-                    authrequest.del("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key, (error) => {
-                        if (error) throw error;
-                    });
-                    cb(stdout.toString("utf8"), stderr.toString("utf8"));
+                    cb(stdout, stderr);
                 });
             });
         });
