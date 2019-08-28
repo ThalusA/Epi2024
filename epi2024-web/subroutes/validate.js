@@ -37,11 +37,11 @@ function init(req, authrequest, random_key, cb) {
         headers: {
             "X-LXD-type": "directory"
         }
-    }, (error, _, body) => {
+    }, (error) => {
         if (error) throw error;
         authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/app" + req.body.ext, {
             body: Buffer.from(req.body.data, 'utf8'),
-        }, (error, _, body) => {
+        }, (error) => {
             if (error) throw error;
             let filename;
             switch (req.body.env) {
@@ -54,7 +54,7 @@ function init(req, authrequest, random_key, cb) {
             }
             authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + filename, {
                 body: Buffer.from(requirement(req.body.data, req.body.env), 'utf8'),
-            }, (error, _, body) => {
+            }, (error) => {
                 if (error) throw error;
                 cb();
             });
@@ -66,10 +66,10 @@ function install(req, authrequest, random_key, cb) {
     let command;
     switch (req.body.env) {
         case "node":
-            command = "/usr/local/bin/npm install -g /root/" + random_key;
+            command = "npm install -g /root/" + random_key;
             break;
         case "python3":
-            command = "/usr/bin/pip3 install -r /root/" + random_key + "/requirements.txt";
+            command = "pip3 install -r /root/" + random_key + "/requirements.txt";
             break;
     }
     authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
@@ -83,7 +83,7 @@ function install(req, authrequest, random_key, cb) {
         }
     }, (error, _, body) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error) => {
             if (error) throw error;
             cb();
         });     
@@ -94,10 +94,10 @@ function execute(req, authrequest, random_key, cb) {
     let start;
     switch (req.body.env) {
         case "node":
-            start = "/usr/local/bin/node /root/" + random_key + "/app.js > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt";
+            start = "node /root/" + random_key + "/app.js > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt";
             break;
         case "python3":
-            start = "/usr/bin/python3 /root/" + random_key + "/app.py > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt";
+            start = "python3 /root/" + random_key + "/app.py > /root/" + random_key + "/stdout.txt 2> /root/" + random_key + "/stderr.txt";
             break;
     }
     authrequest.post("https://localhost:8443/1.0/containers/" + req.body.env + "/exec", {
@@ -111,7 +111,7 @@ function execute(req, authrequest, random_key, cb) {
         }
     }, (error, _, body) => {
         if (error) throw error;
-        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error, _, body) => {
+        authrequest.get("https://localhost:8443" + body.operation + "/wait", (error) => {
             if (error) throw error;
             authrequest.get("https://localhost:8443/1.0/containers/" + req.body.env + "/files?path=/root/" + random_key + "/stdout.txt", (error, _, stdout) => {
                 if (error) throw error;
